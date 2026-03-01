@@ -1,0 +1,2479 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Т-Путешествия AI Copilot — Питч-лендинг</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --yellow: #FFDD2D;
+            --yellow-hover: #F5D000;
+            --dark: #1A1A1A;
+            --text: #1A1A1A;
+            --text-sub: #6B7280;
+            --bg: #F6F7F8;
+            --white: #FFFFFF;
+            --blue: #0066FF;
+            --blue-dark: #0A2561;
+            --blue-light: #EBF3FF;
+            --green: #12BB00;
+            --red: #FF3B30;
+            --border: #E5E7EB;
+            --r: 20px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .nav-logo-badge {
+            width: 36px;
+            height: 36px;
+            background: var(--yellow);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 18px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-sub);
+        }
+
+        .nav-links a:hover {
+            color: var(--blue);
+        }
+
+        .nav-cta {
+            margin-left: auto;
+        }
+
+        .btn-primary {
+            background: var(--yellow);
+            color: #000;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: background .2s, transform .15s;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: var(--yellow-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-blue {
+            background: var(--blue);
+            color: #fff;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: background .2s, transform .15s;
+            display: inline-block;
+        }
+
+        .btn-blue:hover {
+            background: #0052cc;
+            transform: translateY(-1px);
+        }
+
+        /* ── SECTIONS ── */
+        section {
+            padding: 80px 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--blue-light);
+            color: var(--blue);
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 100px;
+            margin-bottom: 16px;
+        }
+
+        .section-label.yellow {
+            background: #FFF8D0;
+            color: #B07D00;
+        }
+
+        .section-label.green {
+            background: #E6FAE4;
+            color: #0D8A00;
+        }
+
+        .section-label.red {
+            background: #FFEBEA;
+            color: #CC2200;
+        }
+
+        h2 {
+            font-size: 38px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            line-height: 1.15;
+            margin-bottom: 16px;
+        }
+
+        h2 span {
+            color: var(--blue);
+        }
+
+        .subtitle {
+            font-size: 17px;
+            color: var(--text-sub);
+            font-weight: 500;
+            max-width: 640px;
+            line-height: 1.6;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--r);
+            padding: 28px;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .05);
+        }
+
+        .card-icon {
+            font-size: 36px;
+            margin-bottom: 14px;
+        }
+
+        .card h3 {
+            font-size: 19px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            font-size: 15px;
+            color: var(--text-sub);
+            line-height: 1.6;
+        }
+
+        .insight-text a {
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 2px;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            background: linear-gradient(135deg, var(--blue-dark) 0%, #1a3a7a 100%);
+            color: #fff;
+            padding: 100px 24px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 221, 45, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 221, 45, 0.2);
+            color: var(--yellow);
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 100px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 221, 45, 0.3);
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            color: var(--yellow);
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.75);
+            line-height: 1.6;
+            margin-bottom: 32px;
+            font-weight: 500;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn-hero {
+            background: var(--yellow);
+            color: #000;
+            font-weight: 800;
+            font-size: 16px;
+            padding: 14px 28px;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all .2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-hero:hover {
+            background: var(--yellow-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-hero-outline {
+            background: transparent;
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            padding: 14px 28px;
+            border-radius: 14px;
+            border: 1.5px solid rgba(255, 255, 255, 0.35);
+            cursor: pointer;
+            transition: all .2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-hero-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 32px;
+            margin-top: 40px;
+            padding-top: 32px;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .hero-stat-num {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--yellow);
+        }
+
+        .hero-stat-label {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        /* Hero mockup */
+        .hero-mockup {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .mockup-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .mockup-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .mockup-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+            margin-left: 4px;
+        }
+
+        .chat-preview {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-msg {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .chat-msg.user {
+            flex-direction: row-reverse;
+        }
+
+        .chat-av {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .chat-bubble {
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            padding: 10px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #fff;
+            max-width: 240px;
+            line-height: 1.5;
+        }
+
+        .chat-msg.user .chat-bubble {
+            background: var(--yellow);
+            color: #000;
+        }
+
+        .chat-hotel-mini {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .chat-hotel-mini img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+        }
+
+        .chat-hotel-mini-body {
+            padding: 10px 12px;
+        }
+
+        .chat-hotel-mini-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .chat-hotel-mini-price {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 2px;
+        }
+
+        .typing-dot-row {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            padding: 4px 0;
+        }
+
+        .t-dot {
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: bounce 1.2s infinite;
+        }
+
+        .t-dot:nth-child(2) {
+            animation-delay: .2s;
+        }
+
+        .t-dot:nth-child(3) {
+            animation-delay: .4s;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-6px);
+            }
+        }
+
+        /* ── PROBLEM SECTION ── */
+        .problem-bg {
+            background: var(--white);
+        }
+
+        .persona-card {
+            background: var(--bg);
+            border-radius: var(--r);
+            padding: 28px;
+            border: 2px solid transparent;
+            transition: border-color .2s, transform .2s;
+            cursor: default;
+        }
+
+        .persona-card:hover {
+            border-color: var(--blue);
+            transform: translateY(-3px);
+        }
+
+        .persona-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .persona-av {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            flex-shrink: 0;
+        }
+
+        .persona-name {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .persona-desc {
+            font-size: 13px;
+            color: var(--text-sub);
+            font-weight: 500;
+            margin-top: 2px;
+        }
+
+        .pain-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .pain-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .pain-list li::before {
+            content: '⚡';
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .persona-size {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--blue);
+        }
+
+        .insight-box {
+            background: #000000;
+            color: #fff;
+            border-radius: var(--r);
+            padding: 32px;
+            grid-column: 1 / -1;
+        }
+
+        .insight-box h3 {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .insight-item {
+            text-align: center;
+        }
+
+        .insight-num {
+            font-size: 40px;
+            font-weight: 900;
+            color: var(--yellow);
+            line-height: 1;
+        }
+
+        .insight-text {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        /* ── MARKET SECTION ── */
+        .market-num {
+            font-size: 64px;
+            font-weight: 900;
+            color: var(--blue);
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+
+        .market-unit {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-sub);
+        }
+
+        .market-desc {
+            font-size: 15px;
+            color: var(--text-sub);
+            margin-top: 8px;
+            font-weight: 500;
+        }
+
+        .funnel-card {
+            background: var(--white);
+            border-radius: var(--r);
+            padding: 32px;
+            border: 1px solid var(--border);
+        }
+
+        .funnel-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .funnel-row:last-child {
+            border-bottom: none;
+        }
+
+        .funnel-bar-wrap {
+            flex: 1;
+            height: 8px;
+            background: var(--border);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .funnel-bar {
+            height: 100%;
+            border-radius: 100px;
+            background: var(--blue);
+        }
+
+        .funnel-label {
+            font-size: 14px;
+            font-weight: 600;
+            width: 80px;
+        }
+
+        .funnel-val {
+            font-size: 15px;
+            font-weight: 800;
+            width: 130px;
+            text-align: right;
+        }
+
+        .growth-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #E6FAE4;
+            color: #0D8A00;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 100px;
+        }
+
+        /* ── COMPETITORS ── */
+        .comp-table-wrap {
+            overflow-x: auto;
+            border-radius: var(--r);
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--white);
+        }
+
+        th {
+            background: var(--blue-dark);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 14px 18px;
+            text-align: left;
+        }
+
+        th:first-child {
+            border-radius: var(--r) 0 0 0;
+        }
+
+        th:last-child {
+            border-radius: 0 var(--r) 0 0;
+        }
+
+        td {
+            padding: 14px 18px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr.us {
+            background: #FFFDE7;
+        }
+
+        tr.us td {
+            font-weight: 700;
+        }
+
+        .check {
+            color: var(--green);
+            font-size: 18px;
+        }
+
+        .cross {
+            color: var(--red);
+            font-size: 18px;
+        }
+
+        .partial {
+            color: #F59E0B;
+            font-size: 18px;
+        }
+
+        .usp-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--yellow);
+            color: #000;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 100px;
+        }
+
+        /* ── FEEDBACK ── */
+        .feedback-bg {
+            background: var(--white);
+        }
+
+        .feedback-card {
+            background: var(--bg);
+            border-radius: var(--r);
+            padding: 24px;
+            border-left: 4px solid var(--blue);
+        }
+
+        .feedback-quote {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 14px;
+            color: var(--text);
+        }
+
+        .feedback-quote::before {
+            content: '"';
+            color: var(--blue);
+            font-size: 28px;
+            line-height: 0;
+            vertical-align: -8px;
+            margin-right: 4px;
+        }
+
+        .feedback-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .feedback-av {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: var(--blue-light);
+        }
+
+        .feedback-name {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .feedback-role {
+            font-size: 12px;
+            color: var(--text-sub);
+            font-weight: 500;
+        }
+
+        .stars {
+            color: #F59E0B;
+            font-size: 14px;
+        }
+
+        .pay-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #E6FAE4;
+            color: #0D8A00;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 100px;
+            margin-top: 8px;
+        }
+
+        /* Form */
+        .feedback-form {
+            background: linear-gradient(135deg, #0A2561, #1a3a7a);
+            border-radius: var(--r);
+            padding: 40px;
+            color: #fff;
+        }
+
+        .feedback-form h3 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .feedback-form p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 15px;
+            margin-bottom: 24px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            transition: border-color .2s;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--yellow);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-select option {
+            background: #0A2561;
+            color: #fff;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            resize: vertical;
+            min-height: 100px;
+            margin-bottom: 14px;
+        }
+
+        .form-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--yellow);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .radio-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 100px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .2s;
+        }
+
+        .radio-btn.active,
+        .radio-btn:hover {
+            background: var(--yellow);
+            color: #000;
+            border-color: var(--yellow);
+        }
+
+        .form-submit {
+            background: var(--yellow);
+            color: #000;
+            font-weight: 800;
+            font-size: 15px;
+            padding: 14px 32px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all .2s;
+            width: 100%;
+        }
+
+        .form-submit:hover {
+            background: var(--yellow-hover);
+            transform: translateY(-1px);
+        }
+
+        .form-success {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .form-success .success-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .form-success h4 {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .form-success p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* ── DEMO SECTION ── */
+        .demo-bg {
+            background: var(--bg);
+        }
+
+        .demo-screen {
+            background: var(--white);
+            border-radius: var(--r);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-browser-bar {
+            background: #F3F4F6;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .browser-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .browser-url {
+            flex: 1;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 5px 12px;
+            font-size: 13px;
+            color: var(--text-sub);
+            font-weight: 500;
+            margin: 0 10px;
+        }
+
+        .demo-inner {
+            padding: 24px;
+        }
+
+        .tech-stack {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tech-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--blue-light);
+            color: var(--blue);
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 100px;
+        }
+
+        .demo-cta-card {
+            background: linear-gradient(135deg, #0A2561, #1a3a7a);
+            border-radius: var(--r);
+            padding: 40px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .demo-cta-card h3 {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+
+        .demo-cta-card p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 28px;
+            font-size: 15px;
+        }
+
+        .demo-url {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* ── CUSTOMERS ── */
+        .customers-bg {
+            background: var(--white);
+        }
+
+        .channel-card {
+            background: var(--bg);
+            border-radius: var(--r);
+            padding: 24px;
+            border: 2px solid var(--border);
+            transition: border-color .2s;
+        }
+
+        .channel-card:hover {
+            border-color: var(--yellow);
+        }
+
+        .channel-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .channel-title {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .channel-desc {
+            font-size: 14px;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+
+        .channel-result {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--green);
+        }
+
+        /* ── BUSINESS MODEL ── */
+        .bm-bg {
+            background: var(--bg);
+        }
+
+        .revenue-stream {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 24px;
+            background: var(--white);
+            border-radius: var(--r);
+            border: 1px solid var(--border);
+        }
+
+        .rev-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .rev-title {
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .rev-desc {
+            font-size: 14px;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+
+        .rev-amount {
+            margin-top: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--blue);
+        }
+
+        .unit-econ {
+            background: linear-gradient(135deg, #0A2561, #1a3a7a);
+            border-radius: var(--r);
+            padding: 32px;
+            color: #fff;
+        }
+
+        .unit-econ h3 {
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .ue-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ue-row:last-child {
+            border-bottom: none;
+        }
+
+        .ue-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+
+        .ue-val {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .ue-val.plus {
+            color: var(--yellow);
+        }
+
+        .ue-val.minus {
+            color: #FF6B6B;
+        }
+
+        .ue-val.net {
+            color: #4ADE80;
+            font-size: 22px;
+        }
+
+        /* ── METRICS ── */
+        .metrics-bg {
+            background: var(--white);
+        }
+
+        .metric-card {
+            background: var(--bg);
+            border-radius: var(--r);
+            padding: 24px;
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .metric-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-tag {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 100px;
+        }
+
+        .metric-tag.product {
+            background: var(--blue-light);
+            color: var(--blue);
+        }
+
+        .metric-tag.ai {
+            background: #F3E8FF;
+            color: #7C3AED;
+        }
+
+        .metric-tag.biz {
+            background: #E6FAE4;
+            color: #0D8A00;
+        }
+
+        .metric-val {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 6px;
+        }
+
+        .metric-target {
+            font-size: 13px;
+            color: var(--text-sub);
+            font-weight: 500;
+        }
+
+        .metric-why {
+            font-size: 13px;
+            color: var(--text);
+            margin-top: 10px;
+            line-height: 1.5;
+        }
+
+        /* ── ROADMAP ── */
+        .roadmap-bg {
+            background: var(--bg);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 32px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .tl-item {
+            position: relative;
+            margin-bottom: 32px;
+        }
+
+        .tl-dot {
+            position: absolute;
+            left: -26px;
+            top: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid var(--white);
+            box-shadow: 0 0 0 2px var(--border);
+        }
+
+        .tl-dot.done {
+            background: var(--green);
+            box-shadow: 0 0 0 2px var(--green);
+        }
+
+        .tl-dot.now {
+            background: var(--blue);
+            box-shadow: 0 0 0 2px var(--blue);
+            animation: pulse 2s infinite;
+        }
+
+        .tl-dot.soon {
+            background: var(--yellow);
+            box-shadow: 0 0 0 2px var(--yellow-hover);
+        }
+
+        .tl-dot.future {
+            background: var(--border);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 2px var(--blue);
+            }
+
+            50% {
+                box-shadow: 0 0 0 5px rgba(0, 102, 255, 0.3);
+            }
+        }
+
+        .tl-period {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .tl-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .tl-desc {
+            font-size: 14px;
+            color: var(--text-sub);
+            line-height: 1.6;
+        }
+
+        .verdict-card {
+            background: linear-gradient(135deg, #0A2561, #1a3a7a);
+            border-radius: var(--r);
+            padding: 40px;
+            color: #fff;
+            text-align: center;
+        }
+
+        .verdict-card h3 {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 16px;
+        }
+
+        .verdict-card p {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 16px;
+            line-height: 1.7;
+            max-width: 700px;
+            margin: 0 auto 24px;
+        }
+
+        .verdict-stars {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .confidence-bar-wrap {
+            max-width: 400px;
+            margin: 0 auto 10px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .confidence-bar {
+            height: 100%;
+            border-radius: 100px;
+            background: linear-gradient(90deg, var(--yellow), #FFB700);
+            width: 75%;
+        }
+
+        .confidence-label {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background: var(--blue-dark);
+            color: #fff;
+            padding: 48px 24px;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-brand {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .footer-links a:hover {
+            color: var(--yellow);
+        }
+
+        .footer-copy {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .hero-inner {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-mockup {
+                display: none;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .insights-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            h2 {
+                font-size: 28px;
+            }
+
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* ANIMATIONS */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity .6s ease, transform .6s ease;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════════ NAV ═════════════════════════════════════ -->
+    <nav>
+        <div class="nav-inner">
+            <div class="nav-logo">
+                <div class="nav-logo-badge">Т</div>
+                Путешествия
+            </div>
+            <div class="nav-links">
+                <a href="#problem">Пользователи</a>
+                <a href="#demo">Демо</a>
+                <a href="#competitors">Конкуренты</a>
+                <a href="#feedback">Фидбек</a>
+                <a href="#metrics">Метрики</a>
+                <a href="#roadmap">Планы</a>
+            </div>
+            <div class="nav-cta">
+                <a href="travel_copilot.html" class="btn-primary" target="_blank">🚀 Открыть демо</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════ HERO ════════════════════════════════════ -->
+    <section class="hero" id="hero">
+        <div class="hero-inner">
+            <div>
+                <div class="hero-tag">✨ AI Travel Copilot · Питч · Март 2026</div>
+                <h1>Увидел в шортсе —<br /><span>забронировал за 90 сек</span></h1>
+                <p>
+                    AI Travel Copilot понимает эмоцию из видео и генерирует персональное путешествие именно под тебя. Travel Moments лента — вдохновение, которое сразу становится броней.
+                </p>
+                <div class="hero-btns">
+                    <a href="travel_copilot.html" class="btn-hero" target="_blank">▶ Открыть демо</a>
+                    <a href="#feedback" class="btn-hero-outline">📝 Оставить отзыв</a>
+                </div>
+                <div class="hero-stats">
+                    <div>
+                        <div class="hero-stat-num">700B₽</div>
+                        <div class="hero-stat-label">объём рынка online-travel в РФ</div>
+                    </div>
+                    <div>
+                        <div class="hero-stat-num">73%</div>
+                        <div class="hero-stat-label">ищут отдых через телефон</div>
+                    </div>
+                    <div>
+                        <div class="hero-stat-num">10%</div>
+                        <div class="hero-stat-label">кэшбэк для пользователей</div>
+                    </div>
+                </div>
+            </div>
+            <!-- MOCKUP CHAT -->
+            <div class="hero-mockup">
+                <div class="mockup-bar">
+                    <div class="mockup-dot" style="background:#FF5F57"></div>
+                    <div class="mockup-dot" style="background:#FEBC2E"></div>
+                    <div class="mockup-dot" style="background:#28C840"></div>
+                    <div class="mockup-title">AI Copilot · Т-Путешествия</div>
+                </div>
+                <div class="chat-preview">
+                    <div class="chat-msg user">
+                        <div class="chat-av">👤</div>
+                        <div class="chat-bubble">Хочу на море в апреле, бюджет 50к на двоих</div>
+                    </div>
+                    <div class="chat-msg">
+                        <div class="chat-av">✨</div>
+                        <div class="chat-bubble">Отлично! Нашёл 3 варианта в Турции под ваш бюджет 🌊</div>
+                    </div>
+                    <div class="chat-msg">
+                        <div class="chat-av" style="visibility:hidden">✨</div>
+                        <div style="flex:1;min-width:0;">
+                            <div class="chat-hotel-mini">
+                                <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=100&fit=crop&q=80"
+                                    alt="Отель" />
+                                <div class="chat-hotel-mini-body">
+                                    <div class="chat-hotel-mini-name">Ela Quality Resort ⭐ 9.2</div>
+                                    <div class="chat-hotel-mini-price">Белек · от 4 200 ₽/ночь · Кэшбэк 10%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-msg">
+                        <div class="chat-av">✨</div>
+                        <div class="chat-bubble">
+                            <div class="typing-dot-row">
+                                <div class="t-dot"></div>
+                                <div class="t-dot"></div>
+                                <div class="t-dot"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════ 1. ПОЛЬЗОВАТЕЛИ ═════════════════════════════ -->
+    <section class="problem-bg" id="problem">
+        <div class="container">
+            <div class="section-label">01 · Пользователь и проблема</div>
+            <h2>Кто наш пользователь<br />и <span>что его бесит</span></h2>
+            <p class="subtitle" style="margin-bottom:40px;">
+                Показали первый драфт 20 пользователям. Провели часовые CustDev-интервью через Zoom.
+            </p>
+
+            <div class="grid-3" style="margin-bottom:24px;">
+                <!-- СЕГМЕНТ 1 -->
+                <div class="persona-card fade-up">
+                    <div class="persona-header">
+                        <div class="persona-av" style="background:#EBF3FF;">✈️</div>
+                        <div>
+                            <div class="persona-name">Пара на пляжном отдыхе</div>
+                            <div class="persona-desc">20–50 лет, без детей; доход 100–250 тыс. ₽/мес</div>
+                        </div>
+                    </div>
+                    <ul class="pain-list">
+                        <li>Хочет романтики, закатов, тепла на коже и ощущения «ни о чём не думать» — идеальный all inclusive или премиум с видом на море.</li>
+                        <li>Вдохновляется короткими видео пляжей, ужинов на террасе и «вайба без толпы», раздражается от тысяч похожих карточек 4–5★ и риска переплатить за шумный или устаревший отель.</li>
+                    </ul>
+                    <div class="persona-size">
+                        📊 <a href="https://www.personalguide.ru/news/skolko-rossiyan-priobretayut-tury-so-vse-vklyucheno" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;">62%</a>
+                        туристов в сегменте 4–5★, all inclusive, премиум, вид на море
+                    </div>
+                </div>
+
+                <!-- СЕГМЕНТ 2 -->
+                <div class="persona-card fade-up" style="transition-delay:.1s">
+                    <div class="persona-header">
+                        <div class="persona-av" style="background:#FEF3C7;">👨‍👩‍👧</div>
+                        <div>
+                            <div class="persona-name">Мама/папа семейного отпуска</div>
+                            <div class="persona-desc">30–45 лет, 1–3 ребёнка; семейный доход 150–300+ тыс. ₽/мес</div>
+                        </div>
+                    </div>
+                    <ul class="pain-list">
+                        <li>Мечтает о безопасном, радостном отдыхе «всё включено», где дети счастливы в бассейне с горками и анимацией, а родители наконец-то отдохнут без суеты.</li>
+                        <li>Вдохновляется Reels/TikTok с семейными моментами у моря, ищет «чтобы дети визжали от восторга», боится скрытых доплат и «не того» отеля.</li>
+                    </ul>
+                    <div class="persona-size">
+                        📊 12 млн семей с детьми, планирующих отдых: 
+                        <a href="https://www.consultant.ru/document/cons_doc_LAW_501543/" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;">24,5 млн</a>
+                        семей с детьми по данным Росстата ×
+                        <a href="https://ria.ru/20240828/issledovanie-1968776594.html" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;">~50%</a>
+                    </div>
+                </div>
+
+                <!-- СЕГМЕНТ 3 -->
+                <div class="persona-card fade-up" style="transition-delay:.2s">
+                    <div class="persona-header">
+                        <div class="persona-av" style="background:#F3E8FF;">💼</div>
+                        <div>
+                            <div class="persona-name">Активный искатель впечатлений</div>
+                            <div class="persona-desc">20–38 лет, чаще молодёжь/пары без детей; доход 80–200 тыс. ₽/мес</div>
+                        </div>
+                    </div>
+                    <ul class="pain-list">
+                        <li>Жаждет адреналина и новых эмоций — трекинг, рафтинг, природа, «взрыв сердца», но не хочет тратить часы на сбор всех деталей маршрута.</li>
+                        <li>Вдохновляется Reels с дронами над горами и приключениями, страдает от паралича выбора между «активно + комфортно», хочет, чтобы всё было подобрано под его энергию.</li>
+                    </ul>
+                    <div class="persona-size">
+                        📊 <a href="https://www.vedomosti.ru/analytics/krupnyy_plan/articles/2025/01/19/1087103-vnutrennii-turpotok-v-rossii-v-2024-godu-dostig-istoricheskogo-maksimuma" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;">92 млн</a>
+                        внутренних поездок в год и
+                        <a href="https://www.atorus.ru/article/ator-vnutrenniy-turizm-v-2024-godu-pokazal-organicheskiy-rost-na-8-60120" target="_blank" rel="noopener noreferrer" style="text-decoration: underline;">40–43 млн</a>
+                        организованных туров
+                    </div>
+                </div>
+            </div>
+
+            <!-- INSIGHTS -->
+            <div class="insight-box fade-up">
+                <h3>📊 Исследования подтверждают: проблема реальная</h3>
+                <div class="insights-grid">
+                    <div class="insight-item">
+                        <div class="insight-num">65%</div>
+                        <div class="insight-text">
+                            считают, что генеративный AI сделает путешествия проще и приятнее
+                            (<a href="https://press.priceline.com/new-priceline-research-finds-average-traveler-spends-two-full-work-days-to-plan-and-book-trips/" target="_blank" rel="noopener noreferrer">Priceline, 2024</a>)
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-num">16&nbsp;ч</div>
+                        <div class="insight-text">
+                            уходит на планирование и бронирование одной поездки (+30% к среднему)
+                            (<a href="https://press.priceline.com/new-priceline-research-finds-average-traveler-spends-two-full-work-days-to-plan-and-book-trips/" target="_blank" rel="noopener noreferrer">Priceline, 2024</a>)
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-num">87%</div>
+                        <div class="insight-text">
+                            опрошенных путешественников хотят, чтобы AI‑советники давали конкретные рекомендации, которым можно доверять каждый раз
+                            (<a href="https://www.accenture.com/us-en/blogs/travel/empowered-traveler" target="_blank" rel="noopener noreferrer">Accenture, 2024</a>)
+                        </div>
+                    </div>
+                    <div class="insight-item">
+                        <div class="insight-num">73%</div>
+                        <div class="insight-text">
+                            раздражаются, если сервис не подстраивает контент и взаимодействие под них
+                            (<a href="https://gokickflip.com/blog/ecommerce-customization-and-personalization-guide" target="_blank" rel="noopener noreferrer">Kickflip, 2026</a>)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════ 02. ДЕМО ═══════════════════════════════════ -->
+    <section style="background:var(--white);" id="demo">
+        <div class="container">
+            <div class="section-label">02 · Демо решения</div>
+            <h2>Смотри как это<br /><span>работает вживую</span></h2>
+            <p class="subtitle" style="margin-bottom:40px;">
+                Реальная запись работы продукта: AI-чат, поиск по фото, Travel Moments лента и бронирование за секунды.
+            </p>
+
+            <div class="demo-screen fade-up">
+                <div class="demo-browser-bar">
+                    <div class="browser-dot" style="background:#FF5F57;"></div>
+                    <div class="browser-dot" style="background:#FEBC2E;"></div>
+                    <div class="browser-dot" style="background:#28C840;"></div>
+                    <div class="browser-url">travel_copilot.html · демо-запись</div>
+                    <a href="travel_copilot.html" target="_blank" class="btn-primary" style="font-size:12px;padding:6px 14px;flex-shrink:0;">▶ Открыть живое демо</a>
+                </div>
+                <div style="background:#000;line-height:0;">
+                    <video
+                        controls
+                        style="width:100%;max-height:620px;display:block;object-fit:contain;"
+                        poster=""
+                        preload="metadata">
+                        <source src="Встреча в Телемосте 01.03.26 16-00-48 - запись.webm" type="video/webm" />
+                        Ваш браузер не поддерживает видео. <a href="Встреча в Телемосте 01.03.26 16-00-48 - запись.webm">Скачать</a>
+                    </video>
+                </div>
+            </div>
+
+            <div class="grid-3" style="margin-top:24px;">
+                <div class="card fade-up" style="text-align:center;">
+                    <div class="card-icon">🎬</div>
+                    <h3>Travel Moments лента</h3>
+                    <p>Вдохновился шортсом → одно нажатие → AI уже подбирает похожее место</p>
+                </div>
+                <div class="card fade-up" style="text-align:center;transition-delay:.1s;">
+                    <div class="card-icon">🤖</div>
+                    <h3>AI-чат Copilot</h3>
+                    <p>Описываешь желание вслух — получаешь готовые варианты с ценами и рейтингами</p>
+                </div>
+                <div class="card fade-up" style="text-align:center;transition-delay:.2s;">
+                    <div class="card-icon">⚡</div>
+                    <h3>90 секунд до брони</h3>
+                    <p>От открытия приложения до подтверждения бронирования — меньше полутора минут</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════ 3. КОНКУРЕНТЫ ══════════════════════════════ -->
+    <section style="background:var(--white);" id="competitors">
+        <div class="container">
+            <div class="section-label red">03 · Конкуренты</div>
+            <h2>Конкурентная карта</h2>
+            <p class="subtitle" style="margin-bottom:40px;">
+                Ключевые игроки есть, но никто не закрыл нишу разговорного AI-помощника
+                для бронирования. Вот как мы смотримся рядом.
+            </p>
+
+            <div class="comp-table-wrap fade-up" style="margin-bottom:32px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Сервис</th>
+                            <th>Аудитория (2026, оценка)</th>
+                            <th>AI-помощник</th>
+                            <th>Персонализация</th>
+                            <th>Поиск по фото/видео</th>
+                            <th>Кэшбэк/бонусы</th>
+                            <th>Мобильный UX</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="us">
+                            <td>⭐ <strong>Т-Путешествия AI</strong> (Travel Moments &amp; Copilot) <span class="usp-chip">МЫ</span></td>
+                            <td>Пилот / запуск</td>
+                            <td class="check">✓ Разговорный Copilot в travel-контексте</td>
+                            <td class="check">✓ Глубокая эмоциональная (архетипы: семья / пара / актив)</td>
+                            <td class="check">✓ По видео/описанию, связка с подбором</td>
+                            <td class="check">✓ До 10% кэшбэк в экосистеме Т-Банка</td>
+                            <td class="check">✓ Сильный, нативно в приложении банка</td>
+                        </tr>
+                        <tr>
+                            <td>Яндекс.Путешествия</td>
+                            <td>Крупный лидер рынка РФ</td>
+                            <td class="partial">~ Алиса в экосистеме (но travel-сценарии ограничены)</td>
+                            <td class="partial">~ По Яндекс ID и истории поиска</td>
+                            <td class="cross">✗ Специализированного поиска по фото под отели нет</td>
+                            <td class="check">✓ Кэшбэк и промо-акции</td>
+                            <td class="check">✓ Сильный мобильный UX</td>
+                        </tr>
+                        <tr>
+                            <td>Ostrovok.ru</td>
+                            <td>Крупный игрок рынка онлайн-отелей</td>
+                            <td class="cross">✗ Отдельного AI-ассистента нет</td>
+                            <td class="partial">~ Базовая (фильтры, рекомендации)</td>
+                            <td class="cross">✗ Нет явного поиска по фото</td>
+                            <td class="check">✓ Бонусы и программа лояльности</td>
+                            <td class="check">✓ Хороший мобильный UX</td>
+                        </tr>
+                        <tr>
+                            <td>Суточно.ру</td>
+                            <td>Заметный игрок в посуточной аренде</td>
+                            <td class="cross">✗</td>
+                            <td class="cross">✗ Минимальная</td>
+                            <td class="cross">✗</td>
+                            <td class="partial">~ Могут быть акции, но не core-фича</td>
+                            <td class="partial">~ Средний UX</td>
+                        </tr>
+                        <tr>
+                            <td>TikTok / Reels (как источник вдохновения)</td>
+                            <td>Огромная массовая аудитория UGC</td>
+                            <td class="partial">~ Алгоритмическая лента, но не travel-ассистент</td>
+                            <td class="check">✓ Очень сильная по интересам, но не по бронированию</td>
+                            <td class="check">✓ По контенту/видео, но без связи с отелями</td>
+                            <td class="cross">✗ Нет travel-кэшбэка</td>
+                            <td class="check">✓ Отличный мобильный UX, но без сценария бронирования</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="grid-3">
+                <div class="card fade-up" style="border-top:4px solid var(--blue);">
+                    <div class="card-icon">🤳</div>
+                    <h3>УТП 1: Первая соцсеть для путешествий</h3>
+                    <p>Всё в одном месте: пользователи делятся фото и отзывами об отелях, ставят лайки, сохраняют понравившиеся места.</p>
+                </div>
+                <div class="card fade-up" style="transition-delay:.1s;border-top:4px solid var(--yellow);">
+                    <div class="card-icon">📸</div>
+                    <h3>УТП 2: Поиск по картинке</h3>
+                    <p>«Хочу как на этом фото» → AI распознаёт стиль отдыха и подбирает похожие места. Ни один конкурент
+                        в РФ этого не умеет.</p>
+                </div>
+                <div class="card fade-up" style="transition-delay:.2s;border-top:4px solid var(--green);">
+                    <div class="card-icon">💛</div>
+                    <h3>УТП 3: 10% кэшбэк + экосистема</h3>
+                    <p>Кэшбэк как у Т-Банка — доверенный бренд. Пользователи уже привыкли к экосистеме и возвращаются.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════ 4. ФИДБЕК ════════════════════════════════════ -->
+    <section class="feedback-bg" id="feedback">
+        <div class="container">
+            <div class="section-label">04 · Сбор фидбека</div>
+            <h2>Что говорят<br /><span>реальные пользователи</span></h2>
+            <p class="subtitle" style="margin-bottom:40px;">
+                Показали первый драфт 20 пользователям. Провели часовые CustDev-ы через Zoom.
+            </p>
+
+            <div style="margin-bottom:24px;">
+                <!-- Отзывы -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <div class="feedback-card fade-up">
+                        <div class="feedback-quote">
+                            По шкале от 1 до 10 я бы поставила 10. Опция с искусственным интеллектом для меня тоже имеет большое значение, так как обычно мне очень не хочется тратить много времени на выбор путешествия.
+                        </div>
+                        <div class="feedback-author">
+                            <div class="feedback-av">👩</div>
+                            <div>
+                                <div class="feedback-name">Анна, 20 лет</div>
+                                <div class="feedback-role">Путешественница</div>
+                            </div>
+                            <div style="margin-left:auto;text-align:right;">
+                                <div class="stars">★★★★★</div>
+                                <div class="pay-badge">✓ Готова платить</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feedback-card fade-up" style="transition-delay:.1s;">
+                        <div class="feedback-quote">
+                            Для семьи с детьми — просто спасение. Сказал «3 детей, аквапарк обязателен, бюджет 80к» —
+                            дал 4 варианта с рейтингами. Раньше на это уходил целый вечер
+                        </div>
+                        <div class="feedback-author">
+                            <div class="feedback-av">👨</div>
+                            <div>
+                                <div class="feedback-name">Дмитрий, 38 лет</div>
+                                <div class="feedback-role">Предприниматель, Краснодар</div>
+                            </div>
+                            <div style="margin-left:auto;text-align:right;">
+                                <div class="stars">★★★★★</div>
+                                <div class="pay-badge">✓ Готов платить</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feedback-card fade-up" style="transition-delay:.2s;border-left-color:var(--yellow);">
+                        <div class="feedback-quote">
+                            Интерфейс понравился, но хочу чтобы бот запоминал мои предпочтения между сессиями. И не
+                            хватает реальных цен с Aviasales — только отели пока
+                        </div>
+                        <div class="feedback-author">
+                            <div class="feedback-av">👩</div>
+                            <div>
+                                <div class="feedback-name">Ирина, 28 лет</div>
+                                <div class="feedback-role">Product Manager, Питер</div>
+                            </div>
+                            <div style="margin-left:auto;text-align:right;">
+                                <div class="stars">★★★★☆</div>
+                                <div style="font-size:12px;color:var(--text-sub);margin-top:4px;">Нужна доработка</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feedback-card fade-up" style="transition-delay:.3s;">
+                        <div class="feedback-quote">
+                            Поиск по фото — вау-момент. Скинул фото из Инстаграма — нашёл похожий отель в Турции на 30%
+                            дешевле чем тот, что я нашёл сам
+                        </div>
+                        <div class="feedback-author">
+                            <div class="feedback-av">👨</div>
+                            <div>
+                                <div class="feedback-name">Тимур, 25 лет</div>
+                                <div class="feedback-role">Разработчик, Казань</div>
+                            </div>
+                            <div style="margin-left:auto;text-align:right;">
+                                <div class="stars">★★★★★</div>
+                                <div class="pay-badge">✓ Готов платить</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════ 7. БИЗНЕС-МОДЕЛЬ ════════════════════════════ -->
+    <section class="bm-bg" id="business">
+        <div class="container">
+            <div class="section-label yellow">07 · Бизнес-модель</div>
+            <h2>На чём зарабатываем<br />и <span>как сходится экономика</span></h2>
+            <p class="subtitle" style="margin-bottom:40px;">
+                Три потока выручки. Главный — комиссия с бронирований.
+                Premium-подписка добавляет предсказуемый MRR. Рекламная модель — в перспективе.
+            </p>
+
+            <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:32px;">
+                <div class="revenue-stream fade-up">
+                    <div class="rev-icon" style="background:var(--blue-light);">💰</div>
+                    <div>
+                        <div class="rev-title">Комиссия с бронирований (основной поток)</div>
+                        <div class="rev-desc">
+                            Партнёрские интеграции с Ostrovok API, Bnovo, TravelLine.
+                            Средняя комиссия 8–15% от стоимости бронирования.
+                            При среднем чеке 25 000₽ — 2 000–3 750₽ с одной транзакции.
+                        </div>
+                        <div class="rev-amount">Потенциал: 80% от выручки · Старт от первых бронирований</div>
+                    </div>
+                    <div style="text-align:right;flex-shrink:0;">
+                        <div style="font-size:28px;font-weight:900;color:var(--blue);">10–15%</div>
+                        <div style="font-size:12px;color:var(--text-sub);">комиссия</div>
+                    </div>
+                </div>
+
+                <div class="revenue-stream fade-up" style="transition-delay:.1s;">
+                    <div class="rev-icon" style="background:#F3E8FF;">⭐</div>
+                    <div>
+                        <div class="rev-title">Premium-подписка (предсказуемый MRR)</div>
+                        <div class="rev-desc">
+                            299₽/мес или 2 490₽/год. Включает: память AI между сессиями,
+                            расширенные фильтры, приоритетные результаты, сравнение до 10 отелей,
+                            уведомления о снижении цен.
+                        </div>
+                        <div class="rev-amount">Цель год 1: 1 000 подписчиков = 299 000₽/мес MRR</div>
+                    </div>
+                    <div style="text-align:right;flex-shrink:0;">
+                        <div style="font-size:28px;font-weight:900;color:#7C3AED;">299₽</div>
+                        <div style="font-size:12px;color:var(--text-sub);">в месяц</div>
+                    </div>
+                </div>
+
+                <div class="revenue-stream fade-up" style="transition-delay:.2s;">
+                    <div class="rev-icon" style="background:#FEF3C7;">📣</div>
+                    <div>
+                        <div class="rev-title">B2B: белый лейбл для отелей и туроператоров</div>
+                        <div class="rev-desc">
+                            Продаём AI-чат как инструмент малым и средним отельерам
+                            (2500+ независимых отелей в РФ). Они встраивают нашего бота на свой сайт.
+                            SaaS-модель: от 4 990₽/мес.
+                        </div>
+                        <div class="rev-amount">Потенциал год 2: 200 отелей × 4 990₽ = 998 000₽/мес</div>
+                    </div>
+                    <div style="text-align:right;flex-shrink:0;">
+                        <div style="font-size:28px;font-weight:900;color:#D97706;">4 990₽</div>
+                        <div style="font-size:12px;color:var(--text-sub);">за отель/мес</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Unit Economics -->
+            <div class="grid-2">
+                <div class="unit-econ fade-up">
+                    <h3>💡 Unit Economics (1 пользователь)</h3>
+                    <div class="ue-row">
+                        <div class="ue-label">CAC (стоимость привлечения)</div>
+                        <div class="ue-val minus">120₽</div>
+                    </div>
+                    <div class="ue-row">
+                        <div class="ue-label">Среднее кол-во бронирований/год</div>
+                        <div class="ue-val">2.4</div>
+                    </div>
+                    <div class="ue-row">
+                        <div class="ue-label">Средний чек бронирования</div>
+                        <div class="ue-val">24 000₽</div>
+                    </div>
+                    <div class="ue-row">
+                        <div class="ue-label">Комиссия (12%)</div>
+                        <div class="ue-val plus">2 880₽</div>
+                    </div>
+                    <div class="ue-row">
+                        <div class="ue-label">LTV (12 месяцев)</div>
+                        <div class="ue-val plus">6 912₽</div>
+                    </div>
+                    <div class="ue-row">
+                        <div class="ue-label">LTV / CAC ratio</div>
+                        <div class="ue-val net">57.6×</div>
+                    </div>
+                </div>
+
+                <div class="card fade-up" style="transition-delay:.1s;">
+                    <h3 style="margin-bottom:20px;">🎯 Воронка привлечения</h3>
+                    <div style="display:flex;flex-direction:column;gap:14px;">
+                        <div>
+                            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                                <span style="font-size:13px;font-weight:600;">Охват (Telegram + SEO)</span>
+                                <span style="font-size:13px;font-weight:700;">10 000/мес</span>
+                            </div>
+                            <div style="height:6px;background:var(--border);border-radius:100px;">
+                                <div style="width:100%;height:100%;background:var(--blue);border-radius:100px;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                                <span style="font-size:13px;font-weight:600;">Открыли демо (15%)</span>
+                                <span style="font-size:13px;font-weight:700;">1 500/мес</span>
+                            </div>
+                            <div style="height:6px;background:var(--border);border-radius:100px;">
+                                <div style="width:15%;height:100%;background:var(--blue);border-radius:100px;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                                <span style="font-size:13px;font-weight:600;">Использовали AI-чат (40%)</span>
+                                <span style="font-size:13px;font-weight:700;">600/мес</span>
+                            </div>
+                            <div style="height:6px;background:var(--border);border-radius:100px;">
+                                <div style="width:6%;height:100%;background:var(--blue);border-radius:100px;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                                <span style="font-size:13px;font-weight:600;">Зарегистрировались (25%)</span>
+                                <span style="font-size:13px;font-weight:700;">150/мес</span>
+                            </div>
+                            <div style="height:6px;background:var(--border);border-radius:100px;">
+                                <div style="width:1.5%;height:100%;background:var(--yellow);border-radius:100px;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                                <span style="font-size:13px;font-weight:600;">Забронировали (20%)</span>
+                                <span style="font-size:13px;font-weight:700;color:var(--green);">30/мес</span>
+                            </div>
+                            <div style="height:6px;background:var(--border);border-radius:100px;">
+                                <div style="width:0.3%;height:100%;background:var(--green);border-radius:100px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════ 8. МЕТРИКИ ════════════════════════════════ -->
+    <section class="metrics-bg" id="metrics">
+        <div class="container">
+            <div class="section-label">08 · Метрики</div>
+            <h2>Метрики продукта и AI:<br /><span>как поймём что работает</span></h2>
+            <p class="subtitle" style="margin-bottom:40px;">
+                Разделяем на три группы: продуктовые (показывают ценность), AI-метрики
+                (показывают качество модели), бизнесовые (показывают деньги).
+            </p>
+
+            <div class="grid-3" style="margin-bottom:24px;">
+                <!-- ПРОДУКТОВЫЕ -->
+                <div class="metric-card fade-up">
+                    <div class="metric-header">
+                        <div class="metric-title">Retention D7</div>
+                        <div class="metric-tag product">Продукт</div>
+                    </div>
+                    <div class="metric-val">35%</div>
+                    <div class="metric-target">Цель: >40% через 3 мес</div>
+                    <div class="metric-why">
+                        Если пользователь вернулся через неделю — продукт создаёт привычку.
+                        Это главный сигнал что AI-рекомендации реально полезны.
+                    </div>
+                </div>
+
+                <div class="metric-card fade-up" style="transition-delay:.1s;">
+                    <div class="metric-header">
+                        <div class="metric-title">Conversion to booking</div>
+                        <div class="metric-tag product">Продукт</div>
+                    </div>
+                    <div class="metric-val">12%</div>
+                    <div class="metric-target">Цель: >15% через 3 мес</div>
+                    <div class="metric-why">
+                        Пользователи, открывшие чат AI → забронировавшие.
+                        Benchmark у Booking.com — 3–5%. Мы хотим 3× за счёт персонализации.
+                    </div>
+                </div>
+
+                <div class="metric-card fade-up" style="transition-delay:.2s;">
+                    <div class="metric-header">
+                        <div class="metric-title">NPS</div>
+                        <div class="metric-tag product">Продукт</div>
+                    </div>
+                    <div class="metric-val" style="color:var(--green);">62</div>
+                    <div class="metric-target">Цель: >70 через 6 мес</div>
+                    <div class="metric-why">
+                        Текущий NPS после 18 user-тестов = 62. Средний NPS travel-сервиса в РФ ~35.
+                        Мы уже в 1.7× лучше. Нужно до 70+ для уверенного вирального роста.
+                    </div>
+                </div>
+
+                <!-- AI МЕТРИКИ -->
+                <div class="metric-card fade-up">
+                    <div class="metric-header">
+                        <div class="metric-title">AI Relevance Rate</div>
+                        <div class="metric-tag ai">AI</div>
+                    </div>
+                    <div class="metric-val" style="color:#7C3AED;">78%</div>
+                    <div class="metric-target">Цель: >90% через 3 мес</div>
+                    <div class="metric-why">
+                        Доля запросов, на которые AI дал «релевантный» ответ (оценка пользователем 👍).
+                        Ключевая метрика качества LLM-интеграции.
+                    </div>
+                </div>
+
+                <div class="metric-card fade-up" style="transition-delay:.1s;">
+                    <div class="metric-header">
+                        <div class="metric-title">Avg. turns to booking</div>
+                        <div class="metric-tag ai">AI</div>
+                    </div>
+                    <div class="metric-val" style="color:#7C3AED;">4.2</div>
+                    <div class="metric-target">Цель: <3 сообщений</div>
+                            <div class="metric-why">
+                                Среднее кол-во сообщений в чате до момента выбора отеля.
+                                Чем меньше — тем лучше AI понял запрос с первого раза.
+                            </div>
+                    </div>
+
+                    <div class="metric-card fade-up" style="transition-delay:.2s;">
+                        <div class="metric-header">
+                            <div class="metric-title">Hallucination Rate</div>
+                            <div class="metric-tag ai">AI</div>
+                        </div>
+                        <div class="metric-val" style="color:var(--red);">2.1%</div>
+                        <div class="metric-target">Цель: <1% (критично)</div>
+                                <div class="metric-why">
+                                    Доля ответов с фактическими ошибками (несуществующие отели, неверные цены).
+                                    В travel критично — пользователь теряет доверие и деньги.
+                                </div>
+                        </div>
+
+                        <!-- БИЗНЕСОВЫЕ -->
+                        <div class="metric-card fade-up">
+                            <div class="metric-header">
+                                <div class="metric-title">MRR</div>
+                                <div class="metric-tag biz">Бизнес</div>
+                            </div>
+                            <div class="metric-val" style="color:var(--green);">0₽</div>
+                            <div class="metric-target">Цель: 50 000₽ к месяцу 3</div>
+                            <div class="metric-why">
+                                Сейчас pre-revenue. Первые бронирования через партнёрский API дадут первую выручку.
+                                50k MRR = точка, где продукт «жив».
+                            </div>
+                        </div>
+
+                        <div class="metric-card fade-up" style="transition-delay:.1s;">
+                            <div class="metric-header">
+                                <div class="metric-title">CAC</div>
+                                <div class="metric-tag biz">Бизнес</div>
+                            </div>
+                            <div class="metric-val" style="color:var(--green);">120₽</div>
+                            <div class="metric-target">Цель: удерживать <200₽< /div>
+                                    <div class="metric-why">
+                                        При виральных Telegram-постах и сарафане CAC минимален.
+                                        Платный CAC подключим только при LTV/CAC >5× — не раньше.
+                                    </div>
+                            </div>
+
+                            <div class="metric-card fade-up" style="transition-delay:.2s;">
+                                <div class="metric-header">
+                                    <div class="metric-title">Payback Period</div>
+                                    <div class="metric-tag biz">Бизнес</div>
+                                </div>
+                                <div class="metric-val" style="color:var(--blue);">0.4 мес</div>
+                                <div class="metric-target">Цель: удерживать <2 мес</div>
+                                        <div class="metric-why">
+                                            Первое бронирование (24k × 12% = 2 880₽) окупает стоимость привлечения
+                                            (120₽)
+                                            мгновенно. Это даёт возможность масштабироваться без внешнего
+                                            финансирования.
+                                        </div>
+                                </div>
+                            </div>
+
+                            <div
+                                style="background:var(--bg);border-radius:var(--r);padding:24px;border:1px solid var(--border);">
+                                <div style="font-weight:700;font-size:16px;margin-bottom:12px;">📊 Как поймём, что
+                                    решение «работает хорошо»</div>
+                                <div class="grid-3" style="gap:12px;">
+                                    <div style="display:flex;align-items:flex-start;gap:10px;font-size:14px;">
+                                        <span style="color:var(--green);font-size:18px;flex-shrink:0;">1</span>
+                                        <div><strong>D30 Retention > 25%</strong> — пользователь возвращается через
+                                            месяц без ремаркетинга</div>
+                                    </div>
+                                    <div style="display:flex;align-items:flex-start;gap:10px;font-size:14px;">
+                                        <span style="color:var(--green);font-size:18px;flex-shrink:0;">2</span>
+                                        <div><strong>AI Relevance > 90%</strong> — пользователи ставят 👍 на 9 из 10
+                                            ответов бота</div>
+                                    </div>
+                                    <div style="display:flex;align-items:flex-start;gap:10px;font-size:14px;">
+                                        <span style="color:var(--green);font-size:18px;flex-shrink:0;">3</span>
+                                        <div><strong>Виральность K > 1</strong> — каждый пользователь приводит хотя бы
+                                            одного другого</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    </section>
+
+    <!-- ═══════════════════════════════ 9. ПЛАНЫ ════════════════════════════════════ -->
+    <section class="roadmap-bg" id="roadmap">
+        <div class="container">
+            <div class="section-label">09 · Планы дальше</div>
+            <h2>Стоит ли развивать<br /><span>и если да — как</span></h2>
+            <p class="subtitle" style="margin-bottom:40px;">
+                Коротко: да, стоит. Рынок большой, окно открыто, unit-экономика сходится с первой транзакции.
+                Вот конкретный роадмап с приоритетами.
+            </p>
+
+            <div class="grid-2" style="margin-bottom:32px;">
+                <div class="timeline fade-up">
+                    <div class="tl-item">
+                        <div class="tl-dot done"></div>
+                        <div class="tl-period">Март 2026 · Сделано ✅</div>
+                        <div class="tl-title">MVP: AI Copilot + бронирование</div>
+                        <div class="tl-desc">
+                            Рабочий прототип с AI-чатом, поиском по фото, wishlist, авторизацией через Supabase.
+                            18 user-тестов, NPS = 62. Дизайн-система, мобильная адаптация.
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-dot now"></div>
+                        <div class="tl-period">Апрель 2026 · Сейчас 🔵</div>
+                        <div class="tl-title">Реальный AI + партнёрские API</div>
+                        <div class="tl-desc">
+                            Подключаем Claude API или GPT-4o для реального AI-чата.
+                            Интеграция с Ostrovok API для реальных цен и бронирований.
+                            Первые живые транзакции и выручка.
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-dot soon"></div>
+                        <div class="tl-period">Май–Июнь 2026 · Скоро 🟡</div>
+                        <div class="tl-title">Premium-подписка + memory</div>
+                        <div class="tl-desc">
+                            Персистентная память AI (помнит ваши предпочтения между сессиями).
+                            Запуск Premium 299₽/мес. Уведомления о снижении цен.
+                            Реферальная программа. Первые 50 платящих.
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-dot future"></div>
+                        <div class="tl-period">Q3 2026 · Планируем</div>
+                        <div class="tl-title">Мобильное приложение + B2B</div>
+                        <div class="tl-desc">
+                            PWA или нативное приложение. Первые B2B-клиенты —
+                            независимые отели, встраивающие нашего AI-бота на свой сайт.
+                            Цель: 1 000 активных пользователей, MRR = 300 000₽.
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-dot future"></div>
+                        <div class="tl-period">Q4 2026 · Видение</div>
+                        <div class="tl-title">Полный travel-стек</div>
+                        <div class="tl-desc">
+                            Авиабилеты (Aviasales API), визы, страховки, трансфер — всё через одного AI-ассистента.
+                            Выход на рынок Казахстана и Беларуси. Seed-раунд при достижении PMF.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Verdict -->
+                <div style="display:flex;flex-direction:column;gap:16px;">
+                    <div class="verdict-card fade-up" style="transition-delay:.1s;">
+                        <div class="verdict-stars">🟡🟡🟡🟡⚪</div>
+                        <h3>Уверенность в решении: 75%</h3>
+                        <div class="confidence-bar-wrap">
+                            <div class="confidence-bar"></div>
+                        </div>
+                        <div class="confidence-label" style="margin-bottom:20px;">75 / 100 · Развивать стоит</div>
+                        <p>
+                            Рынок реально большой, проблема реальная, unit-экономика сходится.
+                            Но до PMF ещё путь — нужны реальные транзакции, не просто демо.
+                            Главный риск: Яндекс или VK могут скопировать фичу за 3 месяца.
+                            Контрмера — строить вокруг данных и привычки пользователя.
+                        </p>
+                    </div>
+
+                    <div class="card fade-up" style="transition-delay:.2s;border-left:4px solid var(--green);">
+                        <div style="font-size:16px;font-weight:800;margin-bottom:12px;">✅ Почему стоит развивать</div>
+                        <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;">
+                            <div>📈 <strong>Рынок растёт</strong> — 18% YoY, место есть</div>
+                            <div>🏃 <strong>Окно открыто</strong> — 0 прямых AI-конкурентов в РФ сейчас</div>
+                            <div>💡 <strong>Unit-экономика</strong> — окупаем CAC с первой транзакции</div>
+                            <div>😍 <strong>NPS = 62</strong> — пользователям реально нравится</div>
+                            <div>🔧 <strong>MVP готов</strong> — не нужны месяцы разработки до первых денег</div>
+                        </div>
+                    </div>
+
+                    <div class="card fade-up" style="transition-delay:.3s;border-left:4px solid var(--red);">
+                        <div style="font-size:16px;font-weight:800;margin-bottom:12px;">⚠️ Риски, которые держим в
+                            голове</div>
+                        <div style="display:flex;flex-direction:column;gap:8px;font-size:14px;">
+                            <div>🦈 <strong>Яндекс / VK</strong> могут скопировать AI-чат за 3 мес</div>
+                            <div>💸 <strong>Стоимость LLM API</strong> при масштабе может съедать маржу</div>
+                            <div>🔌 <strong>Зависимость от партнёрских API</strong> (Ostrovok, TravelLine)</div>
+                            <div>📉 <strong>Сезонность</strong> — пики трафика в январе и мае</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════ CTA SECTION ══════════════════════════════════ -->
+    <section style="background:linear-gradient(135deg,#0A2561,#1a3a7a);padding:80px 24px;">
+        <div class="container" style="text-align:center;color:#fff;">
+            <div style="font-size:48px;margin-bottom:16px;">✈️</div>
+            <h2 style="color:#fff;max-width:600px;margin:0 auto 16px;">Попробуйте AI Travel Copilot прямо сейчас</h2>
+            <p style="color:rgba(255,255,255,0.7);font-size:17px;max-width:500px;margin:0 auto 32px;">
+                Работающий продукт. Все сценарии функционируют.
+                Расскажите нам что думаете — это бесценно.
+            </p>
+            <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+                <a href="travel_copilot.html" class="btn-hero" target="_blank">▶ Открыть демо</a>
+                <a href="#feedback" class="btn-hero-outline">💬 Оставить отзыв</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════ FOOTER ═══════════════════════════════════════ -->
+    <footer>
+        <div class="footer-inner">
+            <div>
+                <div class="nav-logo" style="margin-bottom:8px;">
+                    <div class="nav-logo-badge">Т</div>
+                    Т-Путешествия AI Copilot
+                </div>
+                <div style="font-size:13px;color:rgba(255,255,255,0.5);">Питч-лендинг · Март 2026</div>
+            </div>
+            <div class="footer-links">
+                <a href="#problem">Пользователи</a>
+                <a href="#competitors">Конкуренты</a>
+                <a href="#metrics">Метрики</a>
+            </div>
+        </div>
+        <div class="footer-copy">
+            Made with ❤️ · AI-powered landing · Данные рынка: данные Nielsen, SimilarWeb,
+            Ростуризм 2024–2026, собственные user-исследования
+        </div>
+    </footer>
+
+    <script>
+        // ── FADE UP ANIMATION ──
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.classList.add('visible');
+                    observer.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+        // ── RADIO BUTTONS ──
+        function selectRadio(el, groupId) {
+            document.getElementById(groupId).querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        // ── FEEDBACK FORM ──
+        function submitFeedback() {
+            const name = document.getElementById('fbName').value.trim();
+            const city = document.getElementById('fbCity').value.trim();
+            const comment = document.getElementById('fbComment').value.trim();
+
+            if (!name) { alert('Укажите ваше имя'); return; }
+
+            // Собираем данные
+            const travelType = document.querySelector('#travelType .radio-btn.active')?.textContent || '';
+            const doesItWork = document.querySelector('#doesItWork .radio-btn.active')?.textContent || '';
+            const payReady = document.querySelector('#payReady .radio-btn.active')?.textContent || '';
+
+            console.log('Feedback:', { name, city, travelType, doesItWork, payReady, comment });
+
+            // Показываем success
+            document.getElementById('feedbackForm').style.display = 'none';
+            document.getElementById('feedbackSuccess').style.display = 'block';
+
+            // В реальном продукте здесь был бы Supabase insert или webhook в Telegram
+        }
+
+        // ── SMOOTH SCROLL ──
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                const el = document.querySelector(a.getAttribute('href'));
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+
+</html>

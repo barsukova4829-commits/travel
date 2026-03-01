@@ -10,6 +10,11 @@
       "source": "supabase/agent-skills",
       "sourceType": "github",
       "computedHash": "e3ba3d760c5f4cc43b02a91fb8924f726c7818f95cc35d79d0a606ca622b72f5"
+    },
+    "vercel-deploy": {
+      "source": "supercent-io/skills-template",
+      "sourceType": "github",
+      "computedHash": "11bfd33affaa3b35966f6fd1577c0a70e9e3e2f19e00b098e1bbc2e7fc6cd85a"
     }
   }
 }

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Т-Путешествия — AI Travel Copilot</title>
+  <title>Т-Путешествия — Нейропопутчик</title>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet" />
   <style>
@@ -834,7 +834,8 @@
     }
 
     /* YouTube iframe video background */
-    .moment-bg iframe.moment-video {
+    .moment-bg iframe.moment-video,
+    .moment-bg video.moment-video {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -845,6 +846,13 @@
       border: none;
       pointer-events: none;
       opacity: .88;
+    }
+
+    /* Для вертикальных (9:16) пользовательских видео */
+    .moment-bg video.moment-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     /* Play icon overlay (visible before video starts) */
@@ -1128,10 +1136,41 @@
     }
 
     /* ─── COPILOT FAB ───────────────────────────────────────────────── */
-    .copilot-fab {
+    .copilot-fab-wrap {
       position: fixed;
       bottom: 28px;
       right: 28px;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .fab-mascot {
+      width: 110px;
+      pointer-events: none;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, .18));
+      animation: mascotBob 3s ease-in-out infinite;
+      margin-bottom: -8px;
+    }
+
+    @keyframes mascotBob {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-6px);
+      }
+    }
+
+    .copilot-fab {
+      position: relative;
+      bottom: auto;
+      right: auto;
       z-index: 200;
       background: var(--yellow);
       border-radius: 50px;
@@ -1455,6 +1494,7 @@
     }
 
     .chc-book {
+      display: block;
       width: 100%;
       background: var(--yellow);
       color: var(--dark);
@@ -1466,6 +1506,9 @@
       cursor: pointer;
       border: none;
       transition: .15s;
+      text-align: center;
+      text-decoration: none;
+      box-sizing: border-box;
     }
 
     .chc-book:hover {
@@ -1542,6 +1585,69 @@
     .ctc-buy:hover {
       background: var(--yellow-hover);
     }
+
+    /* ─── ATTRACTIONS CARD ────────────────────────────────────────── */
+    .attractions-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .attractions-card-header {
+      padding: 10px 14px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .attraction-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+
+    .attraction-item:last-child {
+      border-bottom: none;
+    }
+
+    .attraction-item:hover {
+      background: var(--bg);
+    }
+
+    .attr-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      width: 32px;
+      text-align: center;
+      padding-top: 2px;
+    }
+
+    .attr-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .attr-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .attr-desc {
+      font-size: 11px;
+      color: var(--text-sub);
+      line-height: 1.4;
+    }
+
 
     /* ── Booking widget inside chat ──────────────────────────────────────── */
     .booking-widget {
@@ -2659,6 +2765,12 @@
         width: calc(100vh * 16 / 9);
       }
 
+      .moment-bg video.moment-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
       .features {
         grid-template-columns: 1fr;
       }
@@ -3089,6 +3201,310 @@
       background: var(--bg);
       color: var(--text);
     }
+
+    /* ─── MOBILE ADAPTATION (≤ 768px) ──────────────────────────────── */
+    @media (max-width: 768px) {
+
+      /* Header */
+      .top-nav {
+        display: none;
+      }
+
+      .header-inner {
+        padding: 0 16px;
+        gap: 12px;
+      }
+
+      .cabinet-btn span:not(.cabinet-email) {
+        display: none;
+      }
+
+      /* Breadcrumb */
+      .breadcrumb {
+        padding: 10px 16px 0;
+        font-size: 12px;
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+
+      /* Main */
+      main {
+        padding: 0 16px 80px;
+      }
+
+      /* Hero */
+      .hero {
+        padding: 24px 0 20px;
+      }
+
+      .hero h1 {
+        font-size: 24px;
+        letter-spacing: -0.3px;
+      }
+
+      .hero p {
+        font-size: 14px;
+      }
+
+      /* Category nav */
+      .category-nav {
+        gap: 12px;
+        padding: 0 0 20px;
+        justify-content: flex-start;
+      }
+
+      .cat-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        font-size: 20px;
+      }
+
+      .cat-icon svg {
+        width: 22px;
+        height: 22px;
+      }
+
+      .cat-label {
+        font-size: 11px;
+      }
+
+      /* Search card — стек на мобиле */
+      .search-card {
+        flex-direction: column;
+        gap: 0;
+        padding: 8px;
+        border-radius: 16px;
+      }
+
+      .search-input {
+        padding: 10px 14px;
+        border-radius: 10px 10px 0 0;
+        border-bottom: 1px solid var(--border);
+        border: 1.5px solid transparent;
+      }
+
+      .search-divider {
+        display: none;
+      }
+
+      .search-segment {
+        padding: 10px 14px;
+        font-size: 14px;
+        border-top: 1px solid var(--border);
+        border-radius: 0;
+        width: 100%;
+        white-space: normal;
+      }
+
+      .search-segment:first-of-type {
+        border-top: 1px solid var(--border);
+      }
+
+      .search-btn-main {
+        width: 100%;
+        border-radius: 10px;
+        padding: 13px;
+        font-size: 15px;
+        margin-top: 8px;
+      }
+
+      /* Promo banner */
+      .promo-banner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 20px 20px;
+        border-radius: 16px;
+        margin-bottom: 24px;
+      }
+
+      .promo-banner h2 {
+        font-size: 17px;
+        margin-bottom: 4px;
+      }
+
+      .promo-banner p {
+        font-size: 13px;
+      }
+
+      .promo-cta {
+        width: 100%;
+        text-align: center;
+        padding: 10px 16px;
+        font-size: 14px;
+      }
+
+      /* Section headers */
+      .section-hd h2 {
+        font-size: 18px;
+      }
+
+      .section-hd a {
+        font-size: 13px;
+      }
+
+      /* Hotel cards — чуть уже */
+      .hotel-card {
+        width: 260px;
+      }
+
+      .hotel-img-wrap img {
+        height: 170px;
+      }
+
+      /* Dest cards */
+      .dest-card {
+        width: 140px;
+      }
+
+      .dest-img {
+        height: 95px;
+      }
+
+      /* Features */
+      .features {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin: 24px 0;
+      }
+
+      /* Copilot FAB */
+      .copilot-fab-wrap {
+        bottom: 20px;
+        right: 16px;
+      }
+
+      .fab-mascot {
+        width: 80px;
+      }
+
+      .copilot-fab {
+        padding: 12px 18px;
+        font-size: 14px;
+        border-radius: 40px;
+      }
+
+      /* Copilot sidebar — уже полноэкранный */
+      .copilot-sidebar {
+        width: 100%;
+      }
+
+      /* Auth modal */
+      .auth-overlay {
+        align-items: flex-end;
+      }
+
+      .auth-modal {
+        border-radius: 24px 24px 0 0;
+        max-width: 100%;
+        padding: 28px 20px 32px;
+      }
+
+      /* Verified banner */
+      .verified-banner {
+        width: calc(100% - 32px);
+        top: 68px;
+        left: 16px;
+        transform: none;
+        font-size: 13px;
+        justify-content: center;
+        text-align: center;
+      }
+
+      /* Profile hero */
+      .profile-hero {
+        padding: 24px 20px;
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+        border-radius: 16px;
+      }
+
+      .profile-hero-actions {
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .profile-name {
+        font-size: 18px;
+      }
+
+      /* Stats grid */
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      /* My moments grid */
+      .my-moments-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      /* Footer */
+      .footer-strip {
+        padding: 16px;
+        font-size: 11px;
+      }
+
+      /* Section gap */
+      .section-gap {
+        margin-bottom: 24px;
+      }
+    }
+
+    /* ─── VERY SMALL (≤ 380px) ──────────────────────────────────────── */
+    @media (max-width: 380px) {
+      .hero h1 {
+        font-size: 20px;
+      }
+
+      .cat-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+      }
+
+      .cat-icon svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .cat-label {
+        font-size: 10px;
+      }
+
+      .hotel-card {
+        width: 240px;
+      }
+
+      .copilot-fab-wrap {
+        right: 12px;
+        bottom: 16px;
+      }
+
+      .fab-mascot {
+        width: 64px;
+      }
+
+      .copilot-fab {
+        padding: 10px 14px;
+        font-size: 13px;
+        border-radius: 50%;
+        width: 52px;
+        height: 52px;
+        padding: 0;
+        justify-content: center;
+      }
+
+      .copilot-fab span {
+        display: none;
+      }
+
+      .promo-banner h2 {
+        font-size: 15px;
+      }
+    }
   </style>
 </head>
 
@@ -3220,7 +3636,7 @@
      BREADCRUMB
 ══════════════════════════════════════════════════════════════════════ -->
   <div class="breadcrumb">
-    <a href="landing.html">Путешествия</a>
+    <a href="travel_copilot.html">Путешествия</a>
     <span class="breadcrumb-sep">›</span>
     <span id="breadcrumbCurrent">Отели</span>
   </div>
@@ -3957,6 +4373,184 @@
               </div>
             </div>
 
+            <!-- ── Moment 6: Моё видео 1 ── -->
+            <div class="moment-slide" id="moment-6">
+              <div class="moment-bg" style="background:linear-gradient(160deg,#0d2137 0%,#1a4a6e 50%,#2980b9 100%);">
+                <video class="moment-video" src="1.MOV" autoplay muted loop playsinline></video>
+                <div class="moment-video-label">▶ Видео</div>
+              </div>
+              <div class="moment-sidebar-btns">
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">❤️</div><span>0</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">💬</div><span>0</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">↗️</div><span>Поделиться</span>
+                </div>
+              </div>
+              <div class="moment-content">
+                <div class="moment-author">
+                  <div class="moment-avatar" style="background:linear-gradient(135deg,#FFDD2D,#f5a623);">Я</div>
+                  <div>
+                    <div class="moment-author-name">Мой момент</div>
+                    <span class="moment-author-badge">✓ Реальный опыт</span>
+                  </div>
+                </div>
+                <div class="moment-location">📍 Моё путешествие</div>
+                <div class="moment-desc">Незабываемое приключение 🌍</div>
+                <div class="moment-tags"><span class="moment-tag">#моёпутешествие</span></div>
+                <div class="moment-cta">
+                  <button class="btn-want-same" onclick="openCopilotWithHotel('Хочу такое же путешествие')">🌟 Хочу так
+                    же</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Moment 7: Моё видео 2 ── -->
+            <div class="moment-slide" id="moment-7">
+              <div class="moment-bg" style="background:linear-gradient(160deg,#1a0d37 0%,#3d1a6e 50%,#7b2d8b 100%);">
+                <video class="moment-video" src="2.MOV" autoplay muted loop playsinline></video>
+                <div class="moment-video-label">▶ Видео</div>
+              </div>
+              <div class="moment-sidebar-btns">
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">❤️</div><span>0</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">💬</div><span>0</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">↗️</div><span>Поделиться</span>
+                </div>
+              </div>
+              <div class="moment-content">
+                <div class="moment-author">
+                  <div class="moment-avatar" style="background:linear-gradient(135deg,#FFDD2D,#f5a623);">Я</div>
+                  <div>
+                    <div class="moment-author-name">Мой момент</div>
+                    <span class="moment-author-badge">✓ Реальный опыт</span>
+                  </div>
+                </div>
+                <div class="moment-location">📍 Моё путешествие</div>
+                <div class="moment-desc">Незабываемое приключение 🌍</div>
+                <div class="moment-tags"><span class="moment-tag">#моёпутешествие</span></div>
+                <div class="moment-cta">
+                  <button class="btn-want-same" onclick="openCopilotWithHotel('Хочу такое же путешествие')">🌟 Хочу так
+                    же</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Moment 8: Моё видео 3 ── -->
+            <div class="moment-slide" id="moment-8">
+              <div class="moment-bg" style="background:linear-gradient(160deg,#0d2a0d 0%,#1a5c1a 50%,#27ae60 100%);">
+                <video class="moment-video" src="3.MOV" autoplay muted loop playsinline></video>
+                <div class="moment-video-label">▶ Видео</div>
+              </div>
+              <div class="moment-sidebar-btns">
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">❤️</div><span>0</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">💬</div><span>0</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">↗️</div><span>Поделиться</span>
+                </div>
+              </div>
+              <div class="moment-content">
+                <div class="moment-author">
+                  <div class="moment-avatar" style="background:linear-gradient(135deg,#FFDD2D,#f5a623);">Я</div>
+                  <div>
+                    <div class="moment-author-name">Мой момент</div>
+                    <span class="moment-author-badge">✓ Реальный опыт</span>
+                  </div>
+                </div>
+                <div class="moment-location">📍 Моё путешествие</div>
+                <div class="moment-desc">Незабываемое приключение 🌍</div>
+                <div class="moment-tags"><span class="moment-tag">#моёпутешествие</span></div>
+                <div class="moment-cta">
+                  <button class="btn-want-same" onclick="openCopilotWithHotel('Хочу такое же путешествие')">🌟 Хочу так
+                    же</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Moment 9: Моё видео 4 ── -->
+            <div class="moment-slide" id="moment-9">
+              <div class="moment-bg" style="background:linear-gradient(160deg,#2a1a0d 0%,#5c3a1a 50%,#e67e22 100%);">
+                <video class="moment-video" src="AQM6KWX0IR3_zLqukvdkFzmYlxxossxyLPxHENp11gzKL_2kmK5Thn0rN5PowPB.mp4"
+                  autoplay muted loop playsinline></video>
+                <div class="moment-video-label">▶ Видео</div>
+              </div>
+              <div class="moment-sidebar-btns">
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">❤️</div><span>0</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">💬</div><span>0</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">↗️</div><span>Поделиться</span>
+                </div>
+              </div>
+              <div class="moment-content">
+                <div class="moment-author">
+                  <div class="moment-avatar" style="background:linear-gradient(135deg,#FFDD2D,#f5a623);">Я</div>
+                  <div>
+                    <div class="moment-author-name">Мой момент</div>
+                    <span class="moment-author-badge">✓ Реальный опыт</span>
+                  </div>
+                </div>
+                <div class="moment-location">📍 Моё путешествие</div>
+                <div class="moment-desc">Незабываемое приключение 🌍</div>
+                <div class="moment-tags"><span class="moment-tag">#моёпутешествие</span></div>
+                <div class="moment-cta">
+                  <button class="btn-want-same" onclick="openCopilotWithHotel('Хочу такое же путешествие')">🌟 Хочу так
+                    же</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Moment 10: Моё видео 5 ── -->
+            <div class="moment-slide" id="moment-10">
+              <div class="moment-bg" style="background:linear-gradient(160deg,#2a0d0d 0%,#5c1a1a 50%,#c0392b 100%);">
+                <video class="moment-video"
+                  src="AQMXTDXvAGecX7sEv5bZl4Y22q6jPHoP1_YtoiXfE_Tjv6oNXRuWE26Z27hQ2mdncJdJ9mz.mp4" autoplay muted loop
+                  playsinline></video>
+                <div class="moment-video-label">▶ Видео</div>
+              </div>
+              <div class="moment-sidebar-btns">
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">❤️</div><span>0</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">💬</div><span>0</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">↗️</div><span>Поделиться</span>
+                </div>
+              </div>
+              <div class="moment-content">
+                <div class="moment-author">
+                  <div class="moment-avatar" style="background:linear-gradient(135deg,#FFDD2D,#f5a623);">Я</div>
+                  <div>
+                    <div class="moment-author-name">Мой момент</div>
+                    <span class="moment-author-badge">✓ Реальный опыт</span>
+                  </div>
+                </div>
+                <div class="moment-location">📍 Моё путешествие</div>
+                <div class="moment-desc">Незабываемое приключение 🌍</div>
+                <div class="moment-tags"><span class="moment-tag">#моёпутешествие</span></div>
+                <div class="moment-cta">
+                  <button class="btn-want-same" onclick="openCopilotWithHotel('Хочу такое же путешествие')">🌟 Хочу так
+                    же</button>
+                </div>
+              </div>
+            </div>
+
           </div><!-- /moments-feed -->
 
           <!-- Scroll dots -->
@@ -3967,6 +4561,11 @@
             <div class="mdot" onclick="scrollToMoment(3)"></div>
             <div class="mdot" onclick="scrollToMoment(4)"></div>
             <div class="mdot" onclick="scrollToMoment(5)"></div>
+            <div class="mdot" onclick="scrollToMoment(6)"></div>
+            <div class="mdot" onclick="scrollToMoment(7)"></div>
+            <div class="mdot" onclick="scrollToMoment(8)"></div>
+            <div class="mdot" onclick="scrollToMoment(9)"></div>
+            <div class="mdot" onclick="scrollToMoment(10)"></div>
           </div>
         </div>
 
@@ -4296,14 +4895,13 @@
   <!-- ══════════════════════════════════════════════════════════════════════
      COPILOT FAB
 ══════════════════════════════════════════════════════════════════════ -->
-  <button class="copilot-fab" onclick="toggleCopilot()" id="copilotFab">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-      <path d="M8 10h.01M12 10h.01M16 10h.01" stroke-width="2.5" stroke-linecap="round" />
-    </svg>
-    <div class="fab-dot"></div>
-    AI Travel Copilot
-  </button>
+  <div class="copilot-fab-wrap">
+    <img src="Рисунок1.png" class="fab-mascot" alt="Нейропопутчик" onclick="toggleCopilot()" style="cursor:pointer;" />
+    <button class="copilot-fab" onclick="toggleCopilot()" id="copilotFab">
+      <div class="fab-dot"></div>
+      Нейропопутчик
+    </button>
+  </div>
 
   <!-- ══════════════════════════════════════════════════════════════════════
      COPILOT SIDEBAR
@@ -4314,7 +4912,7 @@
       <div class="copilot-header-left">
         <div class="copilot-avatar-wrap">✨</div>
         <div>
-          <div class="copilot-name">AI Travel Copilot</div>
+          <div class="copilot-name">Нейропопутчик</div>
           <div class="copilot-status">Онлайн</div>
         </div>
       </div>
@@ -4617,19 +5215,13 @@
 
     // ── TRENDING TAGS ──────────────────────────────────────────────────────
     function filterByTag(el, query) {
-      // Снимаем active со всех тегов
       document.querySelectorAll('.trending-tag').forEach(t => t.classList.remove('active'));
-      // Ставим active на нажатый
       el.classList.add('active');
-      // Открываем копилот и отправляем запрос
       openCopilot();
       setTimeout(() => {
         addMessage('user', query);
         showTyping();
-        setTimeout(() => {
-          removeTyping();
-          generateTextResponse(query, true);
-        }, 1400);
+        generateTextResponse(query, true);
       }, 300);
     }
 
@@ -4697,125 +5289,384 @@
 
       addMessage('user', text);
       showTyping();
-      setTimeout(() => {
-        removeTyping();
-        generateTextResponse(text);
-      }, 1600);
+      generateTextResponse(text);
     }
 
     function handleEnter(e) {
       if (e.key === 'Enter') sendMessage();
     }
 
-    function generateTextResponse(text, fromTag = false) {
+    // ── OPENROUTER API ─────────────────────────────────────────────────────
+    const OPENROUTER_API_KEY = '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';
+    const conversationHistory = [];
+    const SYSTEM_PROMPT = `Ты — Lenta Travel Copilot, умный помощник по путешествиям от Lenta Travel (tbank.ru/travel).
+Помогаешь пользователям выбрать направление, найти отели, спланировать поездку.
+Отвечай на русском языке. Будь дружелюбным, используй эмодзи.
+Давай конкретные советы по направлениям, ценам, времени поездки, визам, погоде.
+При оплате картой Т-Банка клиенты получают кэшбэк до 10% на отели и авиабилеты.
+Отвечай кратко и по делу — не больше 4-5 предложений. Не повторяй вопрос пользователя.`;
+
+    async function callOpenRouter(userMessage) {
+      conversationHistory.push({ role: 'user', content: userMessage });
+      const resp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://lenta.travel',
+          'X-Title': 'Lenta Travel Copilot'
+        },
+        body: JSON.stringify({
+          model: 'openai/gpt-4o-mini',
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            ...conversationHistory
+          ]
+        })
+      });
+      if (!resp.ok) throw new Error('OpenRouter error: ' + resp.status);
+      const data = await resp.json();
+      const assistantMessage = data.choices[0].message.content;
+      conversationHistory.push({ role: 'assistant', content: assistantMessage });
+      return assistantMessage;
+    }
+
+    async function generateTextResponse(text, fromTag = false) {
+      try {
+        const aiResp = await callOpenRouter(text);
+        removeTyping();
+        addMessage('bot', aiResp);
+        showRelatedHotels(text, fromTag);
+      } catch (e) {
+        console.error('OpenRouter error:', e);
+        removeTyping();
+        addMessage('bot', 'Упс, что-то пошло не так 😔 Попробуйте ещё раз.');
+      }
+    }
+
+    // ── CITY DATA ─────────────────────────────────────────────────────────
+    // Отели — реальные объекты с T-Travel (tbank.ru/travel/hotels/)
+    // URL бронирования ведут напрямую на поиск T-Travel по городу
+    const CITY_DATA = {
+      'Калининград': {
+        hotels: [
+          {
+            name: 'Radisson Hotel Kaliningrad',
+            loc: 'Калининград · пл. Победы, 10',
+            price: '5 400 ₽',
+            rating: '9.2',
+            stars: 5,
+            img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&q=80',
+            url: 'https://www.tbank.ru/travel/hotels/new/countries/russia/kaliningrad/'
+          },
+          {
+            name: 'Kaiserhof Hotel',
+            loc: 'Калининград · Рыбный деревня',
+            price: '4 600 ₽',
+            rating: '9.4',
+            stars: 5,
+            img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop&q=80',
+            url: 'https://www.tbank.ru/travel/hotels/new/countries/russia/kaliningrad/'
+          },
+        ],
+        transport: [
+          { type: 'flight', icon: '✈️', route: 'Москва → Калининград', meta: '2 ч 10 мин · Прямой', price: 'от 3 200 ₽', url: 'https://www.tbank.ru/travel/flights/MOW--KGD/' },
+          { type: 'flight', icon: '✈️', route: 'Санкт-Петербург → Калининград', meta: '1 ч 45 мин · Прямой', price: 'от 2 800 ₽', url: 'https://www.tbank.ru/travel/flights/LED--KGD/' },
+        ],
+        attractions: [
+          { icon: '⛪', name: 'Кафедральный собор', desc: 'Готический шедевр XIV века, могила Канта. Главный символ Калининграда' },
+          { icon: '💎', name: 'Музей янтаря', desc: 'Крупнейшая в мире коллекция янтаря в башне Дона, прямо у Верхнего озера' },
+          { icon: '🐟', name: 'Рыбный деревня', desc: 'Атмосферная набережная с ресторанами и прусской архитектурой вдоль Преголи' },
+          { icon: '🏰', name: 'Калининградский зоопарк', desc: 'Один из старейших в России, основан в 1896 г. Уникальная кайзеровская архитектура' },
+        ]
+      },
+      'Санкт-Петербург': {
+        hotels: [
+          {
+            name: 'Astoria Hotel Saint Petersburg',
+            loc: 'Санкт-Петербург · Исаакиевская пл., 39',
+            price: '7 200 ₽',
+            rating: '9.4',
+            stars: 5,
+            img: 'https://images.unsplash.com/photo-1556103255-4443dbae8e5a?w=400&h=300&fit=crop&q=80',
+            url: 'https://www.tbank.ru/travel/hotels/new/countries/russia/saint-petersburg/'
+          },
+          {
+            name: 'W Saint Petersburg',
+            loc: 'Санкт-Петербург · Вознесенский пр.',
+            price: '9 100 ₽',
+            rating: '9.2',
+            stars: 5,
+            img: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop&q=80',
+            url: 'https://www.tbank.ru/travel/hotels/new/countries/russia/saint-petersburg/'
+          },
+        ],
+        transport: [
+          { type: 'flight', icon: '✈️', route: 'Москва → Санкт-Петербург', meta: '1 ч 25 мин · Прямой', price: 'от 2 900 ₽', url: 'https://www.tbank.ru/travel/flights/MOW--LED/' },
+          { type: 'train', icon: '🚂', route: 'Москва → Санкт-Петербург', meta: '3 ч 30 мин · Сапсан', price: 'от 2 100 ₽', url: 'https://www.tbank.ru/travel/trains/Moskva--Sankt-Peterburg/' },
+        ],
+        attractions: [
+          { icon: '🏛', name: 'Эрмитаж', desc: 'Один из крупнейших музеев мира. 3 млн экспонатов, 350+ залов' },
+          { icon: '⛪', name: 'Исаакиевский собор', desc: 'Главный собор города, панорама с колоннады — обязательно' },
+          { icon: '🎭', name: 'Мариинский театр', desc: 'Легендарный балет и опера. Бронируйте билеты заранее' },
+          { icon: '🛕', name: 'Петергоф', desc: 'Русский Версаль — фонтаны, золото, парки. 30 мин от центра' },
+        ]
+      },
+      'Казань': {
+        hotels: [
+          {
+            name: 'Mercure Kazan',
+            loc: 'Казань · ул. Петербургская, 1',
+            price: '4 800 ₽',
+            rating: '9.1',
+            stars: 4,
+            img: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop&q=80',
+            url: 'https://www.tbank.ru/travel/hotels/new/countries/russia/kazan/'
+          },
+          {
+            name: 'Kazan Palace by Tasigo',
+            loc: 'Казань · ул. Пушкина, 4',
+            price: '6 200 ₽',
+            rating: '9.3',
+            stars: 5,
+            img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop&q=80',
+            url: 'https://www.tbank.ru/travel/hotels/new/countries/russia/kazan/'
+          },
+        ],
+        transport: [
+          { type: 'flight', icon: '✈️', route: 'Москва → Казань', meta: '1 ч 30 мин · Прямой', price: 'от 2 600 ₽', url: 'https://www.tbank.ru/travel/flights/MOW--KZN/' },
+          { type: 'train', icon: '🚂', route: 'Москва → Казань', meta: '11 ч 30 мин · Ласточка', price: 'от 2 200 ₽', url: 'https://www.tbank.ru/travel/trains/Moskva--Kazan/' },
+        ],
+        attractions: [
+          { icon: '🏰', name: 'Казанский Кремль', desc: 'ЮНЕСКО. Белокаменные стены, мечеть Кул-Шариф, башня Сююмбике' },
+          { icon: '🕌', name: 'Мечеть Кул-Шариф', desc: 'Главная мечеть Татарстана с видом на Волгу. Внутри тихо и красиво' },
+          { icon: '🍖', name: 'Старо-татарская слобода', desc: 'Пешеходный квартал с кафе, эчпочмаками и татарским колоритом' },
+          { icon: '🌊', name: 'Набережная Казанки', desc: 'Отличные виды на кремль, парк Тысячелетия, велодорожки' },
+        ]
+      },
+      'Сочи': {
+        hotels: [
+          {
+            name: 'Radisson Blu Paradise Resort',
+            loc: 'Сочи · Адлер, ул. Ленина, 34',
+            price: '8 900 ₽',
+            rating: '9.2',
+            stars: 5,
+            img: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop&q=80',
+            url: 'https://www.tbank.ru/travel/hotels/new/countries/russia/sochi/'
+          },
+          {
+            name: 'Rosa Springs Resort & Spa',
+            loc: 'Сочи · Роза Хутор',
+            price: '9 400 ₽',
+            rating: '9.0',
+            stars: 5,
+            img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop&q=80',
+            url: 'https://www.tbank.ru/travel/hotels/new/countries/russia/sochi/'
+          },
+        ],
+        transport: [
+          { type: 'flight', icon: '✈️', route: 'Москва → Сочи', meta: '2 ч 30 мин · Прямой', price: 'от 4 200 ₽', url: 'https://www.tbank.ru/travel/flights/MOW--AER/' },
+          { type: 'train', icon: '🚂', route: 'Москва → Адлер', meta: '23 ч 40 мин · Фирменный', price: 'от 3 100 ₽', url: 'https://www.tbank.ru/travel/trains/Moskva--Adler/' },
+        ],
+        attractions: [
+          { icon: '🎿', name: 'Роза Хутор', desc: 'Горнолыжный курорт мирового уровня. Летом — хайкинг и канатки' },
+          { icon: '🌿', name: 'Дендрарий', desc: 'Ботанический сад с 1800 видами растений на склоне горы Батарейка' },
+          { icon: '🎡', name: 'Олимпийский парк', desc: 'Арены 2014 года, светомузыкальный фонтан, ипподром' },
+          { icon: '🏔', name: 'Плато Лаго-Наки', desc: '«Русская Швейцария» — альпийские луга, пещеры, водопады' },
+        ]
+      },
+    };
+
+    // ── CITY DETECTION ────────────────────────────────────────────────────
+    function extractCity(lower) {
+      const cityAliases = [
+        { keys: ['калининград'], city: 'Калининград' },
+        { keys: ['санкт-петербург', 'петербург', 'питер', ' спб', 'спб '], city: 'Санкт-Петербург' },
+        { keys: ['казань'], city: 'Казань' },
+        { keys: ['сочи', 'адлер', 'роза хутор'], city: 'Сочи' },
+      ];
+      for (const { keys, city } of cityAliases) {
+        if (keys.some(k => lower.includes(k))) return city;
+      }
+      return null;
+    }
+
+    // ── CITY TRANSPORT CARDS ──────────────────────────────────────────────
+    function addCityTransportCards(options) {
+      const msgs = document.getElementById('copilotMessages');
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'msg bot fade-in';
+      wrapper.innerHTML = `
+        <div class="msg-avatar">✨</div>
+        <div style="flex:1;min-width:0;">
+          <div class="msg-bubble">🚀 Варианты перелётов и билетов:</div>
+          <div class="msg-time">${getTime()}</div>
+        </div>
+      `;
+      msgs.appendChild(wrapper);
+
+      const flightUrl = (from, to) =>
+        `https://www.tbank.ru/travel/flights/${encodeURIComponent(from)}--${encodeURIComponent(to)}/`;
+      const trainUrl = (from, to) =>
+        `https://www.tbank.ru/travel/trains/${encodeURIComponent(from)}--${encodeURIComponent(to)}/`;
+
+      options.forEach(opt => {
+        const card = document.createElement('div');
+        card.className = 'msg bot fade-in';
+        card.innerHTML = `
+          <div class="msg-avatar" style="visibility:hidden;">✨</div>
+          <div style="flex:1;min-width:0;">
+            <div class="chat-transport-card">
+              <div class="ctc-icon">${opt.icon}</div>
+              <div class="ctc-info">
+                <div class="ctc-route">${opt.route}</div>
+                <div class="ctc-meta">${opt.meta}</div>
+              </div>
+              <div class="ctc-right">
+                <div class="ctc-price">${opt.price}</div>
+                <button class="ctc-buy" onclick="buyTicket('${opt.route}', '${opt.type}', '${opt.url}')">Купить →</button>
+              </div>
+            </div>
+          </div>
+        `;
+        msgs.appendChild(card);
+      });
+
+      scrollMessages();
+    }
+
+    // ── ATTRACTIONS CARD ──────────────────────────────────────────────────
+    function addAttractionsCard(cityName, attractions) {
+      const msgs = document.getElementById('copilotMessages');
+      const wrapper = document.createElement('div');
+      wrapper.className = 'msg bot fade-in';
+
+      const items = attractions.map(a => `
+        <div class="attraction-item">
+          <div class="attr-icon">${a.icon}</div>
+          <div class="attr-info">
+            <div class="attr-name">${a.name}</div>
+            <div class="attr-desc">${a.desc}</div>
+          </div>
+        </div>
+      `).join('');
+
+      wrapper.innerHTML = `
+        <div class="msg-avatar">✨</div>
+        <div style="flex:1;min-width:0;">
+          <div class="msg-bubble">📍 Куда сходить в ${cityName}:</div>
+          <div class="msg-time">${getTime()}</div>
+          <div class="attractions-card">
+            <div class="attractions-card-header">Топ мест</div>
+            ${items}
+          </div>
+        </div>
+      `;
+      msgs.appendChild(wrapper);
+      scrollMessages();
+    }
+
+    function showRelatedHotels(text, fromTag) {
       const lower = text.toLowerCase();
-      let resp, hotels = [];
+
+      // ── 1. CITY-FIRST: если в запросе упомянут конкретный город ──────────
+      const detectedCity = extractCity(lower);
+      const cityData = detectedCity ? CITY_DATA[detectedCity] : null;
+
+      if (cityData) {
+        setTimeout(() => {
+          cityData.hotels.forEach(h => addHotelCard(h));
+          setTimeout(() => {
+            addCityTransportCards(cityData.transport);
+            setTimeout(() => {
+              addAttractionsCard(detectedCity, cityData.attractions);
+            }, 200);
+          }, 200);
+        }, 300);
+        return;
+      }
+
+      // ── 2. TOPIC FALLBACK: тематический матчинг ──────────────────────────
+      let hotels = [];
 
       if (lower.includes('пляж') || lower.includes('пляжный')) {
-        resp = '🏖️ Лучшие пляжные курорты с кэшбэком до 10%:';
         hotels = [
           { name: 'Centara Grand Phuket', loc: 'Пхукет, Таиланд', price: '6 200 ₽', rating: '9.3', img: 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=400&h=300&fit=crop&q=80' },
           { name: 'Sharm Dreams Resort', loc: 'Шарм-эль-Шейх, Египет', price: '4 100 ₽', rating: '8.8', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=300&fit=crop&q=80' },
         ];
       } else if (lower.includes('романтик') || lower.includes('для двоих')) {
-        resp = '💑 Романтические отели для двоих — атмосфера и приватность:';
         hotels = [
           { name: 'Astoria Hotel SPb', loc: 'Санкт-Петербург, Россия', price: '7 200 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1556103255-4443dbae8e5a?w=400&h=300&fit=crop&q=80' },
           { name: 'Anantara Phuket', loc: 'Пхукет · Май Кхао', price: '8 300 ₽', rating: '9.6', img: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400&h=300&fit=crop&q=80' },
         ];
       } else if (lower.includes('семь') || lower.includes('дет')) {
-        resp = '👨‍👩‍👧 Семейные отели с анимацией и детскими программами:';
         hotels = [
           { name: 'Radisson Blu Paradise', loc: 'Сочи, Адлер', price: '8 900 ₽', rating: '9.2', img: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop&q=80' },
           { name: 'Rosa Springs Resort', loc: 'Роза Хутор, Сочи', price: '9 400 ₽', rating: '9.0', img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop&q=80' },
         ];
       } else if (lower.includes('тропик') || lower.includes('бали') || lower.includes('мальдив')) {
-        resp = '🌴 Тропический рай — лучшие курорты:';
         hotels = [
           { name: 'Villa Seminyak Estate', loc: 'Бали · Семиньяк', price: '4 500 ₽', rating: '9.5', img: 'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=400&h=300&fit=crop&q=80' },
           { name: 'Centara Grand Phuket', loc: 'Пхукет, Таиланд', price: '6 200 ₽', rating: '9.3', img: 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=400&h=300&fit=crop&q=80' },
         ];
       } else if (lower.includes('город') || lower.includes('urban') || lower.includes('столиц')) {
-        resp = '🏙️ Лучшие городские отели для путешествий:';
         hotels = [
           { name: 'Astoria Hotel SPb', loc: 'Санкт-Петербург', price: '7 200 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1556103255-4443dbae8e5a?w=400&h=300&fit=crop&q=80' },
           { name: 'Pera Palace Hotel', loc: 'Стамбул · Бейоглу', price: '7 100 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&h=300&fit=crop&q=80' },
         ];
       } else if (lower.includes('лыж') || lower.includes('сноуборд') || lower.includes('горнолыж')) {
-        resp = '⛷️ Горнолыжные курорты — снег, трассы, апре-ски:';
         hotels = [
           { name: 'White Peak', loc: 'Архыз, Россия', price: '10 689 ₽', rating: '9.1', img: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop&q=80' },
           { name: 'Rosa Springs Resort', loc: 'Роза Хутор, Сочи', price: '9 400 ₽', rating: '9.0', img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop&q=80' },
         ];
       } else if (lower.includes('гастро') || lower.includes('кулинар') || lower.includes('еда')) {
-        resp = '🍜 Гастро-направления — вкусная еда и кулинарные маршруты:';
         hotels = [
           { name: 'Pera Palace Hotel', loc: 'Стамбул · Бейоглу', price: '7 100 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&h=300&fit=crop&q=80' },
           { name: 'Altai Village Glamping', loc: 'Горный Алтай', price: '6 300 ₽', rating: '9.3', img: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=400&h=300&fit=crop&q=80' },
         ];
       } else if (lower.includes('культур') || lower.includes('музей') || lower.includes('истор') || lower.includes('архитектур')) {
-        resp = '🎭 Культурный туризм — музеи, архитектура, история:';
         hotels = [
           { name: 'Astoria Hotel SPb', loc: 'Санкт-Петербург', price: '7 200 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1556103255-4443dbae8e5a?w=400&h=300&fit=crop&q=80' },
           { name: 'Pera Palace Hotel', loc: 'Стамбул · Бейоглу', price: '7 100 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&h=300&fit=crop&q=80' },
         ];
-      } else if (lower.includes('100') || lower.includes('выгод') || lower.includes('бюджет')) {
-        resp = '💰 Лучшие варианты до 100 000 ₽ с кэшбэком:';
+      } else if (lower.includes('бюджет') || lower.includes('выгод') || lower.match(/\d+\s*(k|к|тыс|000)/)) {
         hotels = [
           { name: 'Скайпарк Апарт-отель', loc: 'Сочи · Эсто-Садок', price: '5 500 ₽', rating: '8.5', img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop&q=80' },
           { name: 'Altai Village Glamping', loc: 'Горный Алтай', price: '6 300 ₽', rating: '9.3', img: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=400&h=300&fit=crop&q=80' },
         ];
-      } else if (lower.includes('горн') || lower.includes('гор') || lower.includes('трекк')) {
-        resp = '🏔️ Горный отдых — трекинг, природа, свежий воздух:';
+      } else if (lower.includes('горн') || lower.includes('трекк') || lower.includes('алтай')) {
         hotels = [
           { name: 'Altai Village Glamping', loc: 'Горный Алтай', price: '6 300 ₽', rating: '9.3', img: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=400&h=300&fit=crop&q=80' },
           { name: 'White Peak', loc: 'Архыз, Россия', price: '10 689 ₽', rating: '9.1', img: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop&q=80' },
         ];
       } else if (lower.includes('пхукет') || lower.includes('таиланд')) {
-        resp = 'Пхукет — лучший пляжный выбор! 🏖️ Вот топ отелей с кэшбэком:';
         hotels = [
           { name: 'Kata Rocks Resort', loc: 'Пхукет · Ката-Ной', price: '5 800 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=400&h=300&fit=crop&q=80' },
           { name: 'Anantara Phuket', loc: 'Пхукет · Май Кхао', price: '8 300 ₽', rating: '9.6', img: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400&h=300&fit=crop&q=80' },
         ];
       } else if (lower.includes('дубай') || lower.includes('оаэ')) {
-        resp = 'Дубай — это впечатления на всю жизнь! ✨';
         hotels = [
           { name: 'Atlantis The Palm', loc: 'Дубай · Palm Jumeirah', price: '18 900 ₽', rating: '9.1', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&h=300&fit=crop&q=80' },
           { name: 'Burj Al Arab', loc: 'Дубай · Jumeirah', price: '95 000 ₽', rating: '9.8', img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&q=80' },
         ];
-      } else if (lower.includes('сочи') || lower.includes('архыз') || lower.includes('гор')) {
-        resp = 'Горы зовут! ⛷️ Вот лучшие варианты:';
+      } else if (lower.includes('архыз')) {
         hotels = [
           { name: 'White Peak', loc: 'Архыз, Россия', price: '10 689 ₽', rating: '9.1', img: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop&q=80' },
           { name: 'Rosa Springs', loc: 'Роза Хутор, Сочи', price: '9 400 ₽', rating: '9.0', img: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop&q=80' },
         ];
-      } else if (lower.includes('бали')) {
-        resp = 'Бали — остров богов! 🌺 Нашёл лучшие виллы:';
-        hotels = [
-          { name: 'Villa Seminyak Estate', loc: 'Бали · Семиньяк', price: '4 500 ₽', rating: '9.5', img: 'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=400&h=300&fit=crop&q=80' },
-        ];
       } else if (lower.includes('стамбул') || lower.includes('турц')) {
-        resp = 'Стамбул ждёт! 🕌 Отели в историческом центре:';
         hotels = [
           { name: 'Pera Palace Hotel', loc: 'Стамбул · Бейоглу', price: '7 100 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&h=300&fit=crop&q=80' },
         ];
-      } else if (lower.match(/\d+\s*(k|к|тыс|000)/)) {
-        resp = 'Подбираю в вашем бюджете лучшие варианты с кэшбэком 💳:';
-        hotels = [
-          { name: 'Скайпарк Апарт-отель', loc: 'Сочи · Эсто-Садок', price: '5 500 ₽', rating: '8.5', img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop&q=80' },
-          { name: 'Bandara Resort Phuket', loc: 'Пхукет, Таиланд', price: '3 200 ₽', rating: '8.7', img: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=400&h=300&fit=crop&q=80' },
-        ];
-      } else {
-        resp = 'Понял вас! 🧭 Укажите детали, и я подберу идеальный вариант:';
       }
 
-      addMessage('bot', resp);
       if (hotels.length > 0) {
         setTimeout(() => {
           hotels.forEach(h => addHotelCard(h));
           setTimeout(() => {
             if (fromTag) {
-              // Тег — только показываем варианты транспорта, без виджета бронирования
               addTransportCards(text);
             } else {
               addMessage('bot', '💳 При оплате картой Т-Банка — кэшбэк до 10%! Выберите даты для бронирования:');
@@ -4825,7 +5676,6 @@
         }, 300);
       } else {
         if (!fromTag) {
-          // Нет совпадений — показываем виджет с поисковым запросом
           setTimeout(() => addBookingWidget(text), 150);
         }
       }
@@ -5143,6 +5993,8 @@
       const msgs = document.getElementById('copilotMessages');
       const div = document.createElement('div');
       div.className = 'msg bot fade-in';
+      const stars = hotel.stars ? '⭐'.repeat(Math.min(hotel.stars, 5)) : '';
+      const bookUrl = hotel.url || 'https://www.tbank.ru/travel/hotels/';
       div.innerHTML = `
       <div class="msg-avatar">✨</div>
       <div style="flex:1;min-width:0;">
@@ -5150,12 +6002,13 @@
           <img src="${hotel.img}" alt="${hotel.name}" />
           <div class="chat-hotel-card-body">
             <div class="chc-name">${hotel.name}</div>
+            <div style="font-size:11px;color:var(--yellow-hover);margin-bottom:2px;">${stars}</div>
             <div style="font-size:12px;color:var(--text-sub);margin-bottom:6px;">${hotel.loc}</div>
             <div class="chc-row">
               <div class="chc-price">От ${hotel.price}/ночь</div>
               <div class="chc-rating">${hotel.rating}</div>
             </div>
-            <button class="chc-book" onclick="bookHotel('${hotel.name}')">Забронировать → Кэшбэк 10%</button>
+            <a class="chc-book" href="${bookUrl}" target="_blank" rel="noopener noreferrer" onclick="bookHotel('${hotel.name}', '${bookUrl}'); return false;">Забронировать → Кэшбэк 10%</a>
           </div>
         </div>
       </div>
@@ -5279,14 +6132,15 @@
       }, 900);
     }
 
-    function bookHotel(name) {
+    function bookHotel(name, url) {
       addMessage('user', `Хочу забронировать ${name}`);
+      const dest = url || 'https://www.tbank.ru/travel/hotels/new/';
+      window.open(dest, '_blank', 'noopener,noreferrer');
       showTyping();
       setTimeout(() => {
         removeTyping();
-        addMessage('bot', `Отличный выбор! 🎉 Укажите даты и количество гостей — и я перенаправлю вас на страницу бронирования:`);
-        setTimeout(() => addBookingWidget(name), 150);
-      }, 1000);
+        addMessage('bot', `Отличный выбор! 🎉 Открываю ${name} на T-Travel — там актуальные цены и наличие.\n\n💳 Оплата картой Т-Банка — кэшбэк до 10% на отели!`);
+      }, 800);
     }
 
     // уникальный ID виджета на случай нескольких вызовов
@@ -5772,8 +6626,22 @@
         }
       }
 
-      // Добавляем карточку в grid
+      // Добавляем карточку в grid (профиль)
       addMomentCard(pendingVideoURL || `https://picsum.photos/id/${Math.floor(Math.random() * 300)}/400/700`, location, 'pending');
+
+      // Добавляем слайд в основную ленту (только если есть локальное видео)
+      if (pendingVideoURL) {
+        const displayName = document.getElementById('profileName')?.textContent || 'Я';
+        const initials = displayName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+        createUserMomentSlide({
+          videoUrl: pendingVideoURL,
+          location,
+          caption,
+          tags,
+          authorName: displayName,
+          authorInitials: initials,
+        });
+      }
 
       btn.disabled = false;
       btn.textContent = 'Опубликовать →';
@@ -5787,7 +6655,7 @@
       document.getElementById('umTags').value = '';
       document.getElementById('umPreview').innerHTML = '<span style="color:rgba(255,255,255,.3);font-size:14px;">Предпросмотр видео</span>';
 
-      showToast('✅ Видео отправлено на модерацию!');
+      showToast('✅ Видео добавлено в ленту!');
     }
 
     function animateProgress() {
@@ -5805,6 +6673,81 @@
           }, 800);
         }
       }, 200);
+    }
+
+    // ── Создать слайд пользовательского видео в основной ленте ──────────
+    function createUserMomentSlide({ videoUrl, location, caption, tags, authorName, authorInitials }) {
+      const feed = document.getElementById('momentsFeed');
+      const idx = 'u' + Date.now();
+      const initials = authorInitials || (authorName ? authorName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() : '?');
+      const tagList = tags ? tags.split(/[\s,]+/).filter(Boolean).map(t => `<span class="moment-tag">${t}</span>`).join('') : '';
+      const gradients = [
+        'linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)',
+        'linear-gradient(160deg,#0d1b2a 0%,#1b3a5c 50%,#2e6da4 100%)',
+        'linear-gradient(160deg,#1a2a1a 0%,#2d5a27 50%,#4a8c3f 100%)',
+        'linear-gradient(160deg,#2a1a1a 0%,#5a2727 50%,#8c3f3f 100%)',
+      ];
+      const grad = gradients[Math.floor(Math.random() * gradients.length)];
+
+      const slide = document.createElement('div');
+      slide.className = 'moment-slide';
+      slide.id = 'moment-' + idx;
+      slide.innerHTML = `
+        <div class="moment-bg" style="background:${grad};">
+          <video class="moment-video" src="${videoUrl}" autoplay muted loop playsinline></video>
+          <div class="moment-video-label">▶ Видео</div>
+        </div>
+        <div class="moment-sidebar-btns">
+          <div class="moment-btn"><div class="moment-btn-icon">❤️</div><span>0</span></div>
+          <div class="moment-btn"><div class="moment-btn-icon">💬</div><span>0</span></div>
+          <div class="moment-btn"><div class="moment-btn-icon">↗️</div><span>Поделиться</span></div>
+        </div>
+        <div class="moment-content">
+          <div class="moment-author">
+            <div class="moment-avatar" style="background:linear-gradient(135deg,#FFDD2D,#f5a623);">${initials}</div>
+            <div>
+              <div class="moment-author-name">${authorName || 'Путешественник'}</div>
+              <span class="moment-author-badge">✓ Реальный опыт</span>
+            </div>
+          </div>
+          <div class="moment-location">📍 ${location}</div>
+          <div class="moment-desc">${caption || ''}</div>
+          <div class="moment-tags">${tagList}</div>
+          <div class="moment-cta">
+            <button class="btn-want-same" onclick="openCopilotWithHotel('Хочу такой же отдых — ${location}')">🌟 Хочу так же</button>
+          </div>
+        </div>
+      `;
+      // Вставляем первым в ленту (после всех существующих — в конец)
+      feed.appendChild(slide);
+      return slide;
+    }
+
+    // ── Загрузить одобренные пользовательские моменты из Supabase ────────
+    async function loadUserMoments() {
+      const sb = getSupabase();
+      if (!sb) return;
+      try {
+        const { data, error } = await sb
+          .from('user_moments')
+          .select('*, profiles(full_name)')
+          .eq('status', 'published')
+          .order('created_at', { ascending: false })
+          .limit(20);
+        if (error || !data) return;
+        data.forEach(m => {
+          const authorName = m.profiles?.full_name || 'Путешественник';
+          const initials = authorName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+          createUserMomentSlide({
+            videoUrl: m.video_url,
+            location: m.location,
+            caption: m.caption,
+            tags: m.tags,
+            authorName,
+            authorInitials: initials,
+          });
+        });
+      } catch (e) { /* Supabase может быть не настроен */ }
     }
 
     function addMomentCard(src, title, status) {
@@ -5860,6 +6803,9 @@
           history.replaceState(null, '', window.location.pathname + window.location.search);
         }
       }
+
+      // Загружаем одобренные пользовательские моменты в ленту
+      loadUserMoments();
 
       // Слушаем изменения состояния (login/logout/token refresh)
       sb.auth.onAuthStateChange((event, session) => {
