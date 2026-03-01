@@ -1,0 +1,5885 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Т-Путешествия — AI Travel Copilot</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+  <style>
+    /* ─── DESIGN TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --yellow: #FFDD2D;
+      --yellow-hover: #F5D000;
+      --dark: #333333;
+      --text: #1A1A1A;
+      --text-sub: #6B7280;
+      --bg: #F6F7F8;
+      --white: #FFFFFF;
+      --blue: #0066FF;
+      --blue-bg: #0A2561;
+      --blue-light: #EBF3FF;
+      --green: #12BB00;
+      --border: #E5E7EB;
+      --shadow: 0 2px 12px rgba(0, 0, 0, .07);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, .12);
+      --r: 16px;
+      --r-sm: 12px;
+      --r-xs: 8px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      outline: none;
+      background: none;
+      font-family: inherit;
+    }
+
+    input,
+    textarea {
+      font-family: inherit;
+      outline: none;
+      border: none;
+    }
+
+    /* ─── HEADER ────────────────────────────────────────────────────── */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      height: 64px;
+    }
+
+    .header-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      padding: 0 24px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .logo-badge {
+      width: 40px;
+      height: 40px;
+      background: var(--yellow);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 900;
+      color: #000;
+      line-height: 1;
+    }
+
+    .top-nav {
+      display: flex;
+      gap: 28px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .top-nav a:hover {
+      color: var(--blue);
+    }
+
+    .header-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cabinet-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--blue);
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .cabinet-btn svg {
+      color: var(--blue);
+    }
+
+    .avatar-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ─── BREADCRUMB ────────────────────────────────────────────────── */
+    .breadcrumb {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 14px 24px 0;
+      font-size: 13px;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .breadcrumb a {
+      color: var(--text-sub);
+    }
+
+    .breadcrumb a:hover {
+      color: var(--blue);
+    }
+
+    .breadcrumb-sep {
+      opacity: .5;
+    }
+
+    /* ─── MAIN ──────────────────────────────────────────────────────── */
+    main {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ─── HERO ──────────────────────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 40px 0 28px;
+    }
+
+    .hero h1 {
+      font-size: 40px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      font-size: 16px;
+      color: var(--text-sub);
+      font-weight: 500;
+    }
+
+    /* ─── CATEGORY NAV ──────────────────────────────────────────────── */
+    .category-nav {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      padding: 0 0 28px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .category-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: transform .2s;
+    }
+
+    .cat-item:hover {
+      transform: translateY(-2px);
+    }
+
+    .cat-icon {
+      width: 64px;
+      height: 64px;
+      background: var(--white);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      transition: background .2s, transform .2s;
+      position: relative;
+    }
+
+    .cat-item.active .cat-icon {
+      background: var(--blue);
+    }
+
+    .cat-item.active .cat-icon svg {
+      color: var(--white) !important;
+    }
+
+    .cat-item.moments-tab .cat-icon {
+      background: linear-gradient(135deg, #ff6b6b, #ffa500);
+    }
+
+    .cat-item.moments-tab.active .cat-icon {
+      background: linear-gradient(135deg, #ff3a3a, #ff7700);
+    }
+
+    .cat-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .cat-item.moments-tab .cat-label {
+      color: #e84d4d;
+    }
+
+    .cat-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background: #FF3B30;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 20px;
+      padding: 1px 5px;
+      border: 2px solid var(--white);
+    }
+
+    /* SVG icons in cat */
+    .cat-icon svg {
+      width: 28px;
+      height: 28px;
+      color: var(--blue);
+      transition: color .2s;
+    }
+
+    .cat-item.moments-tab .cat-icon svg {
+      color: var(--white);
+    }
+
+    /* ─── SEARCH CARD ───────────────────────────────────────────────── */
+    .search-card {
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      padding: 10px;
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .search-input {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--white);
+      border-radius: var(--r-sm);
+      border: 1.5px solid transparent;
+      transition: border-color .2s;
+    }
+
+    .search-input:focus-within {
+      border-color: var(--blue);
+    }
+
+    .search-input input {
+      flex: 1;
+      font-size: 15px;
+      color: var(--text);
+      background: transparent;
+    }
+
+    .search-input input::placeholder {
+      color: var(--text-sub);
+    }
+
+    .search-input svg {
+      color: #b0b8c1;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .search-divider {
+      width: 1px;
+      height: 32px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .search-segment {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: var(--white);
+      border-radius: var(--r-sm);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--dark);
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: border-color .2s;
+      white-space: nowrap;
+    }
+
+    .search-segment:hover {
+      border-color: var(--blue);
+    }
+
+    .search-segment svg {
+      color: #b0b8c1;
+      width: 18px;
+      height: 18px;
+    }
+
+    .search-btn-main {
+      background: var(--yellow);
+      color: var(--dark);
+      font-size: 16px;
+      font-weight: 700;
+      padding: 14px 32px;
+      border-radius: var(--r-sm);
+      flex-shrink: 0;
+      transition: background .2s, transform .15s;
+    }
+
+    .search-btn-main:hover {
+      background: var(--yellow-hover);
+      transform: translateY(-1px);
+    }
+
+    .search-btn-main:active {
+      transform: translateY(0);
+    }
+
+    /* ─── PROMO BANNER ──────────────────────────────────────────────── */
+    .promo-banner {
+      background: linear-gradient(100deg, #2a1a0e 0%, #7a3510 50%, #c45c1a 100%);
+      border-radius: 20px;
+      padding: 28px 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 36px;
+      overflow: hidden;
+      position: relative;
+      min-height: 100px;
+    }
+
+    .promo-banner::before {
+      content: '';
+      position: absolute;
+      right: -20px;
+      top: -40px;
+      width: 240px;
+      height: 240px;
+      background: rgba(255, 200, 100, .1);
+      border-radius: 50%;
+    }
+
+    .promo-banner h2 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .promo-banner p {
+      font-size: 14px;
+      color: rgba(255, 255, 255, .75);
+    }
+
+    .promo-cta {
+      background: rgba(255, 255, 255, .15);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 20px;
+      border: 1.5px solid rgba(255, 255, 255, .3);
+      flex-shrink: 0;
+      transition: .2s;
+    }
+
+    .promo-cta:hover {
+      background: rgba(255, 255, 255, .25);
+    }
+
+    /* ─── SECTION ───────────────────────────────────────────────────── */
+    .section-hd {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .section-hd h2 {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .section-hd a {
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .section-hd a:hover {
+      opacity: .8;
+    }
+
+    /* ─── HOTEL CARDS ───────────────────────────────────────────────── */
+    .hotels-scroll {
+      display: flex;
+      gap: 18px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    .hotels-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hotel-card {
+      flex-shrink: 0;
+      width: 310px;
+      background: var(--white);
+      border-radius: var(--r);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform .25s, box-shadow .25s;
+    }
+
+    .hotel-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hotel-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+      position: relative;
+    }
+
+    .hotel-img-wrap {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hotel-img-wrap img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      display: block;
+      transition: transform .35s;
+    }
+
+    .hotel-card:hover .hotel-img-wrap img {
+      transform: scale(1.04);
+    }
+
+    .hotel-dots {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 5px;
+    }
+
+    .hotel-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .5);
+    }
+
+    .hotel-dot.active {
+      background: #fff;
+    }
+
+    .hotel-cashback-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--yellow);
+      color: #000;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+
+    .hotel-fav {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+      transition: .2s;
+    }
+
+    .hotel-fav:hover {
+      background: #fff;
+      transform: scale(1.1);
+    }
+
+    .hotel-body {
+      padding: 14px 16px 16px;
+    }
+
+    .hotel-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .hotel-name {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .hotel-stars {
+      font-size: 13px;
+      color: var(--text-sub);
+      font-weight: 600;
+    }
+
+    .hotel-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .hotel-rating {
+      background: var(--green);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+
+    .hotel-reviews {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .hotel-location {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 12px;
+    }
+
+    .hotel-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .hotel-price-label {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .hotel-price {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    /* ─── DESTINATIONS ──────────────────────────────────────────────── */
+    .dest-scroll {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .dest-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .dest-card {
+      flex-shrink: 0;
+      width: 160px;
+      background: var(--white);
+      border-radius: var(--r);
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform .25s;
+    }
+
+    .dest-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .dest-img {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .dest-body {
+      padding: 10px 12px;
+    }
+
+    .dest-country {
+      font-size: 11px;
+      color: var(--text-sub);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    .dest-city {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .dest-price {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    /* ─── FEATURES SECTION ──────────────────────────────────────────── */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 36px 0;
+    }
+
+    .feature-card {
+      background: var(--white);
+      border-radius: var(--r);
+      padding: 20px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      box-shadow: var(--shadow);
+    }
+
+    .feature-icon {
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+
+    .feature-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .feature-desc {
+      font-size: 13px;
+      color: var(--text-sub);
+      line-height: 1.5;
+    }
+
+    /* ─── TRAVEL MOMENTS VIEW ───────────────────────────────────────── */
+    #moments-view {
+      display: none;
+    }
+
+    .moments-layout {
+      display: grid;
+      grid-template-columns: 1fr 420px 1fr;
+      gap: 0;
+      min-height: calc(100vh - 200px);
+      align-items: start;
+    }
+
+    .moments-sidebar-left {
+      padding-top: 20px;
+      padding-right: 24px;
+    }
+
+    .moments-sidebar-right {
+      padding-top: 20px;
+      padding-left: 24px;
+    }
+
+    .moments-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .moments-sub {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 20px;
+    }
+
+    .trending-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      margin: 0 6px 8px 0;
+      cursor: pointer;
+      transition: .15s;
+    }
+
+    .trending-tag:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      cursor: pointer;
+    }
+
+    .trending-tag.active {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+
+    /* MOMENTS FEED (center column) */
+    .moments-feed {
+      height: 680px;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      border-radius: 24px;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, .18);
+      position: relative;
+      scrollbar-width: none;
+    }
+
+    .moments-feed::-webkit-scrollbar {
+      display: none;
+    }
+
+    .moment-slide {
+      height: 680px;
+      scroll-snap-align: start;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      flex-shrink: 0;
+    }
+
+    .moment-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+    }
+
+    /* YouTube iframe video background */
+    .moment-bg iframe.moment-video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      /* Scale 16:9 video to fill portrait 500×680 slot */
+      width: calc(680px * 16 / 9);
+      height: 680px;
+      transform: translate(-50%, -50%);
+      border: none;
+      pointer-events: none;
+      opacity: .88;
+    }
+
+    /* Play icon overlay (visible before video starts) */
+    .moment-video-label {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 3;
+      background: rgba(0, 0, 0, .55);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: .4px;
+      pointer-events: none;
+    }
+
+    .moment-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, .8) 0%, rgba(0, 0, 0, .3) 40%, rgba(0, 0, 0, .05) 100%);
+    }
+
+    .moment-sidebar-btns {
+      position: absolute;
+      right: 14px;
+      bottom: 120px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .moment-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      color: rgba(255, 255, 255, .9);
+      cursor: pointer;
+    }
+
+    .moment-btn-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .15);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      transition: .2s;
+    }
+
+    .moment-btn:hover .moment-btn-icon {
+      background: rgba(255, 255, 255, .25);
+      transform: scale(1.1);
+    }
+
+    .moment-btn span {
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .moment-content {
+      position: relative;
+      z-index: 2;
+      padding: 16px 18px 20px;
+    }
+
+    .moment-author {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 10px;
+    }
+
+    .moment-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #000;
+      border: 2px solid rgba(255, 255, 255, .4);
+    }
+
+    .moment-author-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .moment-author-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: var(--yellow);
+      color: #000;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 20px;
+      padding: 1px 7px;
+    }
+
+    .moment-location {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .moment-desc {
+      font-size: 14px;
+      color: rgba(255, 255, 255, .85);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+
+    .moment-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .moment-tag {
+      background: rgba(255, 255, 255, .18);
+      color: #fff;
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+    }
+
+    .moment-cta {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn-want-same {
+      flex: 1;
+      background: var(--yellow);
+      color: var(--dark);
+      font-size: 15px;
+      font-weight: 800;
+      padding: 13px 20px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: .2s;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-want-same:hover {
+      background: var(--yellow-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-want-same:active {
+      transform: translateY(0);
+    }
+
+    .btn-book-now {
+      background: rgba(255, 255, 255, .15);
+      color: #fff;
+      border: 1.5px solid rgba(255, 255, 255, .4);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 13px 18px;
+      border-radius: 14px;
+      backdrop-filter: blur(6px);
+      transition: .2s;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-book-now:hover {
+      background: rgba(255, 255, 255, .25);
+    }
+
+    /* scroll indicator dots */
+    .moments-dots {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 5px;
+      z-index: 5;
+    }
+
+    .mdot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .4);
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .mdot.active {
+      background: #fff;
+      width: 16px;
+      border-radius: 3px;
+    }
+
+    /* suggested hotels in right sidebar */
+    .suggested-hotel {
+      background: var(--white);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: .2s;
+      display: flex;
+      gap: 0;
+    }
+
+    .suggested-hotel:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .suggested-hotel img {
+      width: 90px;
+      height: 90px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .suggested-hotel-body {
+      padding: 10px 12px;
+      flex: 1;
+    }
+
+    .suggested-hotel-name {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .suggested-hotel-loc {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-bottom: 6px;
+    }
+
+    .suggested-hotel-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .suggested-hotel-price {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .suggested-hotel-rating {
+      font-size: 11px;
+      background: var(--green);
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-weight: 700;
+    }
+
+    /* ─── COPILOT FAB ───────────────────────────────────────────────── */
+    .copilot-fab {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 200;
+      background: var(--yellow);
+      border-radius: 50px;
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--dark);
+      box-shadow: 0 4px 20px rgba(255, 221, 45, .45), 0 2px 8px rgba(0, 0, 0, .1);
+      transition: transform .25s, box-shadow .25s, background .2s;
+      animation: fabPulse 2.5s ease-in-out infinite;
+    }
+
+    .copilot-fab:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 8px 28px rgba(255, 221, 45, .55), 0 4px 14px rgba(0, 0, 0, .12);
+      animation-play-state: paused;
+    }
+
+    .copilot-fab .fab-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #00C853;
+      flex-shrink: 0;
+    }
+
+    @keyframes fabPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 4px 20px rgba(255, 221, 45, .45), 0 2px 8px rgba(0, 0, 0, .1);
+      }
+
+      50% {
+        box-shadow: 0 4px 28px rgba(255, 221, 45, .7), 0 2px 12px rgba(0, 0, 0, .12);
+      }
+    }
+
+    .copilot-fab svg {
+      width: 20px;
+      height: 20px;
+      color: #000;
+    }
+
+    /* ─── COPILOT SIDEBAR ───────────────────────────────────────────── */
+    .copilot-sidebar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 300;
+      width: 420px;
+      height: 100vh;
+      background: var(--white);
+      box-shadow: -4px 0 40px rgba(0, 0, 0, .15);
+      display: flex;
+      flex-direction: column;
+      transform: translateX(110%);
+      transition: transform .35s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .copilot-sidebar.open {
+      transform: translateX(0);
+    }
+
+    .copilot-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 299;
+      background: rgba(0, 0, 0, .3);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s;
+    }
+
+    .copilot-overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .copilot-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .copilot-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .copilot-avatar-wrap {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #FFDD2D, #FFA500);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(255, 165, 0, .35);
+    }
+
+    .copilot-name {
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .copilot-status {
+      font-size: 12px;
+      color: var(--green);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .copilot-status::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .copilot-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .copilot-close:hover {
+      background: var(--border);
+    }
+
+    /* Quick actions */
+    .copilot-quick-actions {
+      padding: 12px 20px 4px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .qa-chip {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .15s;
+      color: var(--dark);
+      white-space: nowrap;
+    }
+
+    .qa-chip:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: var(--blue-light);
+    }
+
+    /* Messages */
+    .copilot-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      scroll-behavior: smooth;
+    }
+
+    .copilot-messages::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .copilot-messages::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 2px;
+    }
+
+    .msg {
+      display: flex;
+      gap: 8px;
+      max-width: 100%;
+    }
+
+    .msg.user {
+      flex-direction: row-reverse;
+    }
+
+    .msg-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #FFDD2D, #FFA500);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .msg.user .msg-avatar {
+      background: var(--blue-light);
+    }
+
+    .msg-bubble {
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .msg.bot .msg-bubble {
+      background: var(--bg);
+      border-radius: 4px 16px 16px 16px;
+    }
+
+    .msg.user .msg-bubble {
+      background: var(--blue);
+      color: #fff;
+      border-radius: 16px 4px 16px 16px;
+    }
+
+    .msg-time {
+      font-size: 10px;
+      color: var(--text-sub);
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .msg.bot .msg-time {
+      text-align: left;
+    }
+
+    /* Image preview in chat */
+    .msg-img-preview {
+      width: 100%;
+      max-width: 220px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+
+    .msg-img-preview img {
+      width: 100%;
+      display: block;
+    }
+
+    /* Hotel suggestion cards in chat */
+    .chat-hotel-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 8px;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .chat-hotel-card:hover {
+      border-color: var(--blue);
+      box-shadow: 0 2px 12px rgba(0, 102, 255, .1);
+    }
+
+    .chat-hotel-card img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .chat-hotel-card-body {
+      padding: 8px 10px;
+    }
+
+    .chc-name {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .chc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chc-price {
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .chc-rating {
+      background: var(--green);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 5px;
+    }
+
+    .chc-book {
+      width: 100%;
+      background: var(--yellow);
+      color: var(--dark);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 7px;
+      margin-top: 7px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+      transition: .15s;
+    }
+
+    .chc-book:hover {
+      background: var(--yellow-hover);
+    }
+
+    /* ── Transport cards in chat ─────────────────────────────────────────── */
+    .chat-transport-card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .chat-transport-card:hover {
+      border-color: var(--blue);
+      box-shadow: 0 2px 12px rgba(0, 102, 255, .1);
+    }
+
+    .ctc-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .ctc-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .ctc-route {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .ctc-meta {
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    .ctc-right {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .ctc-price {
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .ctc-buy {
+      background: var(--yellow);
+      color: var(--dark);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: none;
+      white-space: nowrap;
+      transition: .15s;
+    }
+
+    .ctc-buy:hover {
+      background: var(--yellow-hover);
+    }
+
+    /* ── Booking widget inside chat ──────────────────────────────────────── */
+    .booking-widget {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-top: 8px;
+      width: 100%;
+    }
+
+    .bw-header {
+      background: var(--dark);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .bw-body {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bw-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .bw-field {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .bw-label {
+      font-size: 11px;
+      color: var(--text-sub);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+
+    .bw-input {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 9px;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--dark);
+      outline: none;
+      box-sizing: border-box;
+      background: var(--bg);
+    }
+
+    .bw-input:focus {
+      border-color: var(--blue);
+      background: #fff;
+    }
+
+    .bw-guests-row {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .bw-guests-btn {
+      width: 36px;
+      height: 36px;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--dark);
+      flex-shrink: 0;
+    }
+
+    .bw-guests-btn:hover {
+      background: var(--border);
+    }
+
+    .bw-guests-num {
+      flex: 1;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .bw-book-btn {
+      width: 100%;
+      background: var(--yellow);
+      color: var(--dark);
+      font-size: 14px;
+      font-weight: 800;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      cursor: pointer;
+      transition: .15s;
+      margin-top: 2px;
+    }
+
+    .bw-book-btn:hover {
+      background: var(--yellow-hover);
+      transform: translateY(-1px);
+    }
+
+    /* Typing indicator */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 14px;
+    }
+
+    .typing-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #b0b8c1;
+      animation: typingBounce 1.2s infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: .2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: .4s;
+    }
+
+    @keyframes typingBounce {
+
+      0%,
+      60%,
+      100% {
+        transform: translateY(0);
+      }
+
+      30% {
+        transform: translateY(-5px);
+      }
+    }
+
+    /* Input area */
+    .copilot-input-area {
+      padding: 12px 16px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
+
+    .copilot-input-wrap {
+      flex: 1;
+      background: var(--bg);
+      border-radius: 14px;
+      border: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 12px;
+      transition: .2s;
+    }
+
+    .copilot-input-wrap:focus-within {
+      border-color: var(--blue);
+      background: var(--white);
+    }
+
+    .copilot-input-wrap input {
+      flex: 1;
+      background: transparent;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .copilot-input-wrap input::placeholder {
+      color: var(--text-sub);
+    }
+
+    .upload-btn-label {
+      cursor: pointer;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      padding: 2px;
+      border-radius: 6px;
+      transition: .15s;
+    }
+
+    .upload-btn-label:hover {
+      color: var(--blue);
+    }
+
+    .upload-btn-label svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .upload-btn-label input {
+      display: none;
+    }
+
+    .send-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--yellow);
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: .2s;
+      font-size: 18px;
+    }
+
+    .send-btn:hover {
+      background: var(--yellow-hover);
+      transform: scale(1.05);
+    }
+
+    .send-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Image upload progress */
+    .upload-progress {
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      margin: 0 16px 0;
+      overflow: hidden;
+      display: none;
+    }
+
+    .upload-progress-bar {
+      height: 100%;
+      background: var(--yellow);
+      border-radius: 2px;
+      width: 0;
+      transition: width .3s;
+    }
+
+    /* ─── DIVIDER ───────────────────────────────────────────────────── */
+    .section-gap {
+      margin-bottom: 36px;
+    }
+
+    /* ─── FOOTER strip ──────────────────────────────────────────────── */
+    .footer-strip {
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      padding: 20px 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-top: 40px;
+    }
+
+    .footer-strip a {
+      color: var(--blue);
+    }
+
+    /* ─── ANIMATIONS ────────────────────────────────────────────────── */
+    .fade-in {
+      animation: fadeIn .4s ease both;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* View transitions */
+    #hotels-view,
+    #moments-view,
+    #profile-view {
+      animation: fadeIn .3s ease both;
+    }
+
+    /* ─── PROFILE VIEW ──────────────────────────────────────────────── */
+    #profile-view {
+      display: none;
+    }
+
+    .profile-hero {
+      background: linear-gradient(135deg, var(--blue-bg) 0%, #0a3580 60%, #1a52b3 100%);
+      border-radius: 24px;
+      padding: 36px 40px;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-hero::before {
+      content: '';
+      position: absolute;
+      right: -60px;
+      top: -60px;
+      width: 280px;
+      height: 280px;
+      background: rgba(255, 255, 255, .04);
+      border-radius: 50%;
+    }
+
+    .profile-hero::after {
+      content: '';
+      position: absolute;
+      right: 60px;
+      bottom: -80px;
+      width: 200px;
+      height: 200px;
+      background: rgba(255, 221, 45, .06);
+      border-radius: 50%;
+    }
+
+    .profile-avatar-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .profile-avatar {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: var(--yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      font-weight: 900;
+      color: #000;
+      border: 3px solid rgba(255, 255, 255, .2);
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile-avatar-edit {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 26px;
+      height: 26px;
+      background: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      cursor: pointer;
+      z-index: 2;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .25);
+      transition: transform .2s;
+    }
+
+    .profile-avatar-edit:hover {
+      transform: scale(1.1);
+    }
+
+    .profile-hero-info {
+      flex: 1;
+    }
+
+    .profile-name {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 4px;
+      cursor: pointer;
+    }
+
+    .profile-name-edit {
+      display: none;
+      background: rgba(255, 255, 255, .12);
+      border: 1.5px solid rgba(255, 255, 255, .3);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+      width: 220px;
+      margin-bottom: 4px;
+    }
+
+    .profile-email {
+      font-size: 14px;
+      color: rgba(255, 255, 255, .65);
+      margin-bottom: 14px;
+    }
+
+    .profile-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 221, 45, .15);
+      border: 1px solid rgba(255, 221, 45, .3);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--yellow);
+    }
+
+    .profile-hero-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .profile-edit-btn {
+      background: rgba(255, 255, 255, .12);
+      border: 1.5px solid rgba(255, 255, 255, .2);
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--white);
+      transition: background .2s;
+    }
+
+    .profile-edit-btn:hover {
+      background: rgba(255, 255, 255, .2);
+    }
+
+    .profile-signout-btn {
+      background: transparent;
+      border: 1.5px solid rgba(255, 255, 255, .12);
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, .5);
+      transition: all .2s;
+    }
+
+    .profile-signout-btn:hover {
+      color: var(--white);
+      border-color: rgba(255, 255, 255, .3);
+    }
+
+    /* ── STATS GRID ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border-radius: 18px;
+      padding: 22px 20px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      opacity: .07;
+    }
+
+    .stat-card:nth-child(1)::before {
+      background: var(--blue);
+    }
+
+    .stat-card:nth-child(2)::before {
+      background: var(--green);
+    }
+
+    .stat-card:nth-child(3)::before {
+      background: #f59e0b;
+    }
+
+    .stat-card:nth-child(4)::before {
+      background: var(--yellow);
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+
+    .stat-icon.blue {
+      background: var(--blue-light);
+    }
+
+    .stat-icon.green {
+      background: #dcfce7;
+    }
+
+    .stat-icon.amber {
+      background: #fef3c7;
+    }
+
+    .stat-icon.yellow {
+      background: #fefce8;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-sub);
+    }
+
+    /* ── SECTION HEADER ── */
+    .profile-section {
+      margin-bottom: 32px;
+    }
+
+    .profile-section-hd {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .profile-section-hd h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    /* ── MOMENTS UPLOAD ── */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 18px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      background: var(--white);
+      position: relative;
+    }
+
+    .upload-zone:hover,
+    .upload-zone.drag-over {
+      border-color: var(--blue);
+      background: var(--blue-light);
+    }
+
+    .upload-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .upload-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--blue-light);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin: 0 auto 14px;
+    }
+
+    .upload-zone h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .upload-zone p {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 16px;
+    }
+
+    .upload-btn {
+      display: inline-block;
+      background: var(--yellow);
+      color: var(--dark);
+      font-weight: 700;
+      font-size: 14px;
+      border-radius: 10px;
+      padding: 10px 24px;
+      transition: background .15s;
+      pointer-events: none;
+    }
+
+    /* ── UPLOAD PROGRESS ── */
+    .upload-progress-wrap {
+      display: none;
+      background: var(--white);
+      border-radius: 18px;
+      padding: 20px 24px;
+      box-shadow: var(--shadow);
+      margin-top: 12px;
+    }
+
+    .upload-progress-wrap.show {
+      display: block;
+    }
+
+    .upload-progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .upload-progress-bar-bg {
+      background: var(--bg);
+      border-radius: 6px;
+      height: 6px;
+      overflow: hidden;
+    }
+
+    .upload-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--blue), #4f9cf9);
+      border-radius: 6px;
+      transition: width .3s ease;
+      width: 0%;
+    }
+
+    /* ── MY MOMENTS GRID ── */
+    .my-moments-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .my-moment-card {
+      background: var(--dark);
+      border-radius: 14px;
+      aspect-ratio: 9/16;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      max-height: 220px;
+    }
+
+    .my-moment-card video,
+    .my-moment-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .my-moment-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0, 0, 0, .7) 0%, transparent 60%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 10px;
+    }
+
+    .my-moment-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border-radius: 20px;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      width: fit-content;
+    }
+
+    .my-moment-status.pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .my-moment-status.published {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .my-moment-status.rejected {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .my-moment-card-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .my-moment-delete {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 26px;
+      height: 26px;
+      background: rgba(0, 0, 0, .5);
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--white);
+      cursor: pointer;
+      transition: background .2s;
+    }
+
+    .my-moment-delete:hover {
+      background: #ef4444;
+    }
+
+    .moments-empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px;
+      color: var(--text-sub);
+      font-size: 14px;
+    }
+
+    /* ── TRIPS LIST ── */
+    .trips-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .trip-item {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--shadow);
+      transition: transform .15s;
+    }
+
+    .trip-item:hover {
+      transform: translateX(3px);
+    }
+
+    .trip-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: var(--blue-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .trip-info {
+      flex: 1;
+    }
+
+    .trip-hotel {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .trip-meta {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .trip-price {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      text-align: right;
+    }
+
+    .trip-cashback {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--green);
+      text-align: right;
+      margin-top: 2px;
+    }
+
+    .trip-status {
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 20px;
+      padding: 3px 10px;
+      white-space: nowrap;
+    }
+
+    .trip-status.completed {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .trip-status.upcoming {
+      background: var(--blue-light);
+      color: var(--blue);
+    }
+
+    .trip-status.cancelled {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    /* ── PROFILE SETTINGS ── */
+    .settings-card {
+      background: var(--white);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--bg);
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .settings-row:last-child {
+      border-bottom: none;
+    }
+
+    .settings-row:hover {
+      background: var(--bg);
+    }
+
+    .settings-row-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .settings-row-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .settings-row-label {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .settings-row-sub {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .settings-row-arrow {
+      color: var(--text-sub);
+      font-size: 18px;
+    }
+
+    /* ── UPLOAD MODAL ── */
+    .upload-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .55);
+      z-index: 2100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .upload-modal-overlay.open {
+      display: flex;
+    }
+
+    .upload-modal {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 32px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: var(--shadow-lg);
+      animation: fadeInUp .25s ease;
+    }
+
+    .upload-modal h2 {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .upload-modal p {
+      font-size: 14px;
+      color: var(--text-sub);
+      margin-bottom: 20px;
+    }
+
+    .um-field {
+      margin-bottom: 14px;
+    }
+
+    .um-field label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-sub);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .um-field input,
+    .um-field select,
+    .um-field textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 14px;
+      color: var(--text);
+      font-family: inherit;
+      transition: border-color .2s;
+    }
+
+    .um-field input:focus,
+    .um-field select:focus,
+    .um-field textarea:focus {
+      border-color: var(--blue);
+    }
+
+    .um-field textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .um-preview {
+      border-radius: 12px;
+      overflow: hidden;
+      aspect-ratio: 9/16;
+      max-height: 260px;
+      background: var(--dark);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .um-preview video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .um-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .um-cancel {
+      flex: 1;
+      padding: 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-sub);
+      transition: all .15s;
+    }
+
+    .um-cancel:hover {
+      background: var(--bg);
+    }
+
+    .um-publish {
+      flex: 2;
+      padding: 12px;
+      background: var(--yellow);
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--dark);
+      transition: background .15s;
+    }
+
+    .um-publish:hover {
+      background: var(--yellow-hover);
+    }
+
+    .um-publish:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    /* responsive profile */
+    @media (max-width: 900px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .my-moments-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .profile-hero {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .profile-hero-actions {
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .my-moments-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .profile-hero {
+        padding: 24px 20px;
+      }
+    }
+
+    /* ─── RESPONSIVE ────────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .moments-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .moments-sidebar-left,
+      .moments-sidebar-right {
+        display: none;
+      }
+
+      .moments-feed {
+        border-radius: 0;
+        box-shadow: none;
+        height: calc(100vh - 180px);
+      }
+
+      .moment-bg iframe.moment-video {
+        height: 100vh;
+        width: calc(100vh * 16 / 9);
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 28px;
+      }
+
+      .search-card {
+        flex-wrap: wrap;
+      }
+
+      .copilot-sidebar {
+        width: 100%;
+      }
+    }
+
+    /* ─── AUTH MODAL ────────────────────────────────────────────────── */
+    .auth-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .auth-overlay.open {
+      display: flex;
+    }
+
+    .auth-modal {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 36px 32px 32px;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      box-shadow: var(--shadow-lg);
+      animation: fadeInUp .25s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .auth-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--text-sub);
+      transition: background .15s;
+    }
+
+    .auth-close:hover {
+      background: var(--border);
+    }
+
+    .auth-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .auth-logo-badge {
+      width: 36px;
+      height: 36px;
+      background: var(--yellow);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 900;
+      color: #000;
+    }
+
+    .auth-logo-text {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .auth-tabs {
+      display: flex;
+      gap: 0;
+      background: var(--bg);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 24px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      padding: 9px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-sub);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .auth-tab.active {
+      background: var(--white);
+      color: var(--text);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, .09);
+    }
+
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .auth-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .auth-field label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-sub);
+    }
+
+    .auth-field input {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 15px;
+      color: var(--text);
+      transition: border-color .2s;
+      width: 100%;
+    }
+
+    .auth-field input:focus {
+      border-color: var(--blue);
+      background: var(--white);
+    }
+
+    .auth-field input.error {
+      border-color: #ef4444;
+    }
+
+    .auth-err {
+      font-size: 13px;
+      color: #ef4444;
+      display: none;
+      margin-top: -6px;
+    }
+
+    .auth-err.show {
+      display: block;
+    }
+
+    .auth-submit {
+      background: var(--yellow);
+      color: var(--dark);
+      font-weight: 700;
+      font-size: 15px;
+      border-radius: 12px;
+      padding: 13px;
+      width: 100%;
+      transition: background .15s, transform .1s;
+      margin-top: 4px;
+    }
+
+    .auth-submit:hover {
+      background: var(--yellow-hover);
+    }
+
+    .auth-submit:active {
+      transform: scale(.98);
+    }
+
+    .auth-submit:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .auth-notice {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-sub);
+      line-height: 1.5;
+      margin-top: 8px;
+    }
+
+    .auth-notice a {
+      color: var(--blue);
+    }
+
+    /* ── success screen ── */
+    .auth-success {
+      display: none;
+      text-align: center;
+      padding: 8px 0;
+    }
+
+    .auth-success.show {
+      display: block;
+    }
+
+    .auth-success-icon {
+      width: 64px;
+      height: 64px;
+      background: #dcfce7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      margin: 0 auto 20px;
+    }
+
+    .auth-success h3 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .auth-success p {
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.6;
+    }
+
+    /* ── verified banner ── */
+    .verified-banner {
+      display: none;
+      position: fixed;
+      top: 72px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #dcfce7;
+      border: 1px solid #86efac;
+      color: #15803d;
+      border-radius: 12px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      z-index: 1500;
+      box-shadow: var(--shadow);
+      animation: fadeInUp .3s ease;
+    }
+
+    .verified-banner.show {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ── VIDEO LINK BUTTON ── */
+    .video-link-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--r-xs);
+      color: var(--text-sub);
+      transition: all .15s;
+      flex-shrink: 0;
+      cursor: pointer;
+      background: none;
+      border: none;
+      position: relative;
+    }
+
+    .video-link-btn:hover {
+      background: var(--bg);
+      color: #FF0050;
+    }
+
+    .video-link-btn .vbtn-tooltip {
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--dark);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .15s;
+    }
+
+    .video-link-btn:hover .vbtn-tooltip {
+      opacity: 1;
+    }
+
+    /* ── VIDEO MESSAGE BUBBLE ── */
+    .msg-video-preview {
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      max-width: 230px;
+      aspect-ratio: 16/9;
+    }
+
+    .msg-video-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .msg-video-platform {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: rgba(0, 0, 0, .72);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      letter-spacing: .3px;
+    }
+
+    .msg-video-platform.yt {
+      background: #871e1e;
+    }
+
+    .msg-video-platform.tt {
+      background: #010101;
+    }
+
+    .msg-video-platform.ig {
+      background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+    }
+
+    .msg-video-play {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, .2);
+    }
+
+    .msg-video-label {
+      font-size: 11px;
+      opacity: .85;
+      padding: 5px 2px 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ── VIDEO CONFIDENCE BADGE ── */
+    .video-confidence {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin: 4px 0 2px;
+    }
+
+    /* ── header auth state ── */
+    .cabinet-btn.logged-in .cabinet-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--yellow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      color: #000;
+    }
+
+    .cabinet-btn .cabinet-email {
+      max-width: 130px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 13px;
+    }
+
+    .cabinet-signout {
+      font-size: 12px;
+      color: var(--text-sub);
+      padding: 4px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all .15s;
+    }
+
+    .cabinet-signout:hover {
+      background: var(--bg);
+      color: var(--text);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── SUPABASE CONFIG ───────────────────────────────────────────── -->
+  <script>
+    window.SUPABASE_URL = 'https://nzvqxgpnuadytkmxhocq.supabase.co';
+    window.SUPABASE_KEY = 'sb_publishable_U9YU8FEBz2hHCQpF_Eq_hw_J9LEwuV6';
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     HEADER
+══════════════════════════════════════════════════════════════════════ -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="landing.html" class="logo">
+        <div class="logo-badge">Т</div>
+      </a>
+      <nav class="top-nav">
+        <a href="#">Частным лицам</a>
+        <a href="#">Бизнесу</a>
+        <a href="#">Премиум</a>
+        <a href="#">Еще</a>
+      </nav>
+      <div class="header-right" id="headerRight">
+        <!-- Гость -->
+        <button id="btnOpenAuth" class="cabinet-btn" onclick="openAuthModal('login')">
+          <span>Войти</span>
+          <div class="avatar-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </div>
+        </button>
+        <!-- Авторизован (скрыт пока) -->
+        <div id="userPanel" style="display:none;align-items:center;gap:10px;">
+          <button class="cabinet-btn logged-in" onclick="switchTab('profile')" style="background:none;border:none;">
+            <div class="cabinet-avatar" id="userAvatar">У</div>
+            <span class="cabinet-email" id="userEmail"></span>
+          </button>
+          <button class="cabinet-signout" onclick="signOut()">Выйти</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── VERIFIED BANNER ───────────────────────────────────────────── -->
+  <div class="verified-banner" id="verifiedBanner">
+    <span>✅</span>
+    <span>Email подтверждён! Добро пожаловать в Т‑Путешествия</span>
+  </div>
+
+  <!-- ── AUTH MODAL ─────────────────────────────────────────────────── -->
+  <div class="auth-overlay" id="authOverlay" onclick="handleOverlayClick(event)">
+    <div class="auth-modal">
+      <button class="auth-close" onclick="closeAuthModal()">✕</button>
+
+      <div class="auth-logo">
+        <div class="auth-logo-badge">Т</div>
+        <span class="auth-logo-text">Т‑Путешествия</span>
+      </div>
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Войти</div>
+        <div class="auth-tab" id="tabRegister" onclick="switchAuthTab('register')">Регистрация</div>
+      </div>
+
+      <!-- Login Form -->
+      <div id="formLogin">
+        <form class="auth-form" onsubmit="handleLogin(event)">
+          <div class="auth-field">
+            <label>Email</label>
+            <input type="email" id="loginEmail" placeholder="your@email.ru" autocomplete="email" required />
+          </div>
+          <div class="auth-field">
+            <label>Пароль</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" required />
+          </div>
+          <div class="auth-err" id="loginErr"></div>
+          <button type="submit" class="auth-submit" id="loginBtn">Войти</button>
+          <p class="auth-notice">Нет аккаунта? <a href="#"
+              onclick="switchAuthTab('register');return false;">Зарегистрироваться</a></p>
+        </form>
+      </div>
+
+      <!-- Register Form -->
+      <div id="formRegister" style="display:none;">
+        <form class="auth-form" onsubmit="handleRegister(event)">
+          <div class="auth-field">
+            <label>Email</label>
+            <input type="email" id="regEmail" placeholder="your@email.ru" autocomplete="email" required />
+          </div>
+          <div class="auth-field">
+            <label>Пароль <span style="color:var(--text-sub);font-weight:400;">(мин. 6 символов)</span></label>
+            <input type="password" id="regPassword" placeholder="••••••••" autocomplete="new-password" required
+              minlength="6" />
+          </div>
+          <div class="auth-field">
+            <label>Повторите пароль</label>
+            <input type="password" id="regPassword2" placeholder="••••••••" autocomplete="new-password" required
+              minlength="6" />
+          </div>
+          <div class="auth-err" id="regErr"></div>
+          <button type="submit" class="auth-submit" id="regBtn">Создать аккаунт</button>
+          <p class="auth-notice">
+            Нажимая «Создать аккаунт», вы соглашаетесь с <a href="#">условиями использования</a>
+            и обработкой персональных данных.
+          </p>
+        </form>
+      </div>
+
+      <!-- Success screen (после регистрации) -->
+      <div class="auth-success" id="authSuccess">
+        <div class="auth-success-icon">📬</div>
+        <h3>Подтвердите email</h3>
+        <p>Мы отправили письмо на <strong id="successEmail"></strong>.<br />Откройте его и нажмите кнопку подтверждения
+          — после этого вы сможете войти.</p>
+        <button class="auth-submit" style="margin-top:20px;" onclick="switchAuthTab('login')">Уже подтвердил —
+          Войти</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     BREADCRUMB
+══════════════════════════════════════════════════════════════════════ -->
+  <div class="breadcrumb">
+    <a href="landing.html">Путешествия</a>
+    <span class="breadcrumb-sep">›</span>
+    <span id="breadcrumbCurrent">Отели</span>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     MAIN
+══════════════════════════════════════════════════════════════════════ -->
+  <main>
+
+    <!-- ── HOTELS VIEW ──────────────────────────────────────────────────── -->
+    <div id="hotels-view">
+      <div class="hero">
+        <h1>Отели с кэшбэком до 10%</h1>
+        <p>Вернем при оплате картой Т‑Банка</p>
+      </div>
+
+      <!-- Category Nav -->
+      <div class="category-nav">
+        <button class="cat-item" onclick="switchTab('avia')">
+          <div class="cat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path
+                d="M17.8 19.2L16 11l3.5-3.5C21 6 21 4 19.5 2.5S18 2 16.5 3.5L13 7 4.8 5.2l-1.5 1.5 6.3 3.8L6.3 13H4l-1 1 3 2 2 3 1-1v-2.3l3.5-3.3 3.8 6.3 1.5-1.5z" />
+            </svg>
+          </div>
+          <span class="cat-label">Авиа</span>
+        </button>
+        <button class="cat-item active" id="tabHotels" onclick="switchTab('hotels')">
+          <div class="cat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="2" y="8" width="20" height="13" rx="2" />
+              <path d="M16 8V6a4 4 0 0 0-8 0v2" />
+              <line x1="12" y1="12" x2="12" y2="16" />
+            </svg>
+          </div>
+          <span class="cat-label">Отели</span>
+        </button>
+        <button class="cat-item moments-tab" id="tabMoments" onclick="switchTab('moments')">
+          <div class="cat-icon" style="position:relative;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+            <div class="cat-badge">NEW</div>
+          </div>
+          <span class="cat-label">Moments</span>
+        </button>
+        <button class="cat-item" onclick="switchTab('trains')">
+          <div class="cat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="4" y="3" width="16" height="14" rx="3" />
+              <path d="M8 17l-2 4M16 17l2 4M12 3v14" />
+              <circle cx="8" cy="13" r="1.5" fill="currentColor" />
+              <circle cx="16" cy="13" r="1.5" fill="currentColor" />
+            </svg>
+          </div>
+          <span class="cat-label">Поезда</span>
+        </button>
+        <button class="cat-item" onclick="switchTab('tours')">
+          <div class="cat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M12 2a10 10 0 0 1 10 10H12V2zM12 22a10 10 0 0 1-10-10h10v10z" opacity=".5" />
+            </svg>
+          </div>
+          <span class="cat-label">Туры</span>
+        </button>
+        <button class="cat-item" onclick="switchTab('bus')">
+          <div class="cat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="7" width="18" height="12" rx="2" />
+              <path d="M3 11h18M7 19v2M17 19v2" />
+              <circle cx="7.5" cy="14.5" r="1.5" fill="currentColor" />
+              <circle cx="16.5" cy="14.5" r="1.5" fill="currentColor" />
+            </svg>
+          </div>
+          <span class="cat-label">Автобусы</span>
+        </button>
+        <button class="cat-item" onclick="switchTab('excursions')">
+          <div class="cat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path
+                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+            </svg>
+          </div>
+          <span class="cat-label">Экскурсии</span>
+        </button>
+        <button class="cat-item" onclick="switchTab('fav')">
+          <div class="cat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path
+                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+          </div>
+          <span class="cat-label">Избранное</span>
+        </button>
+        <button class="cat-item" onclick="switchTab('orders')">
+          <div class="cat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
+              <rect x="9" y="3" width="6" height="4" rx="1" />
+              <line x1="9" y1="12" x2="15" y2="12" />
+              <line x1="9" y1="16" x2="13" y2="16" />
+            </svg>
+          </div>
+          <span class="cat-label">Заказы</span>
+        </button>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="search-card">
+        <div class="search-input">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input type="text" placeholder="Направление или отель" />
+        </div>
+        <div class="search-divider"></div>
+        <div class="search-segment">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+          7 – 8 марта
+        </div>
+        <div class="search-divider"></div>
+        <div class="search-segment">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          2 гостя
+        </div>
+        <button class="search-btn-main">Искать</button>
+      </div>
+
+      <!-- Promo Banner -->
+      <div class="promo-banner">
+        <div>
+          <h2>Отмечайте китайский Новый год в Китае</h2>
+          <p>Скидка по промокоду — 2 000 ₽ на заказ от 10 000 ₽. Действует до 03.03.2026 при первой брони отеля</p>
+        </div>
+        <button class="promo-cta">Узнать подробности</button>
+      </div>
+
+      <!-- Hotels on Resorts -->
+      <div class="section-gap">
+        <div class="section-hd">
+          <h2>Отели на курортах с кэшбэком</h2>
+          <a href="#">Все</a>
+        </div>
+        <div class="hotels-scroll" id="hotelsScroll">
+
+          <div class="hotel-card" onclick="openCopilotWithHotel('White Peak, Архыз')">
+            <div class="hotel-img-wrap">
+              <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=620&h=400&fit=crop&q=80"
+                alt="White Peak" />
+              <div class="hotel-cashback-badge">Кэшбэк 10%</div>
+              <div class="hotel-fav">🤍</div>
+              <div class="hotel-dots">
+                <div class="hotel-dot active"></div>
+                <div class="hotel-dot"></div>
+                <div class="hotel-dot"></div>
+              </div>
+            </div>
+            <div class="hotel-body">
+              <div class="hotel-top">
+                <div class="hotel-name">White Peak</div>
+              </div>
+              <div class="hotel-meta">
+                <span class="hotel-rating">9.1</span>
+                <span class="hotel-reviews">55 оценок • Отель</span>
+              </div>
+              <div class="hotel-location">Архыз</div>
+              <div class="hotel-price-row">
+                <span class="hotel-price-label">За 1 ночь</span>
+              </div>
+              <div class="hotel-price">От 10 689 ₽</div>
+            </div>
+          </div>
+
+          <div class="hotel-card" onclick="openCopilotWithHotel('Скайпарк, Эсто-Садок')">
+            <div class="hotel-img-wrap">
+              <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=620&h=400&fit=crop&q=80"
+                alt="Скайпарк" />
+              <div class="hotel-fav">🤍</div>
+              <div class="hotel-dots">
+                <div class="hotel-dot active"></div>
+                <div class="hotel-dot"></div>
+                <div class="hotel-dot"></div>
+              </div>
+            </div>
+            <div class="hotel-body">
+              <div class="hotel-top">
+                <div class="hotel-name">Скайпарк</div>
+                <div class="hotel-stars">3 ★</div>
+              </div>
+              <div class="hotel-meta">
+                <span class="hotel-rating">8.5</span>
+                <span class="hotel-reviews">118 оценок • Апарт-отель</span>
+              </div>
+              <div class="hotel-location">Эсто-Садок • 170 м до подъемника</div>
+              <div class="hotel-price-row"><span class="hotel-price-label">За 1 ночь</span></div>
+              <div class="hotel-price">От 5 500 ₽</div>
+            </div>
+          </div>
+
+          <div class="hotel-card" onclick="openCopilotWithHotel('Mairi Park Hotel, Архыз')">
+            <div class="hotel-img-wrap">
+              <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=620&h=400&fit=crop&q=80"
+                alt="Mairi Park Hotel" />
+              <div class="hotel-cashback-badge">Кэшбэк 8%</div>
+              <div class="hotel-fav">🤍</div>
+              <div class="hotel-dots">
+                <div class="hotel-dot active"></div>
+                <div class="hotel-dot"></div>
+                <div class="hotel-dot"></div>
+              </div>
+            </div>
+            <div class="hotel-body">
+              <div class="hotel-top">
+                <div class="hotel-name">Mairi Park Hotel</div>
+                <div class="hotel-stars">5 ★</div>
+              </div>
+              <div class="hotel-meta">
+                <span class="hotel-rating">9.5</span>
+                <span class="hotel-reviews">53 оценки • Отель</span>
+              </div>
+              <div class="hotel-location">Архыз • 410 м до подъемника</div>
+              <div class="hotel-price-row"><span class="hotel-price-label">За 1 ночь</span></div>
+              <div class="hotel-price">От 15 770 ₽</div>
+            </div>
+          </div>
+
+          <div class="hotel-card" onclick="openCopilotWithHotel('Radisson Blu, Сочи')">
+            <div class="hotel-img-wrap">
+              <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=620&h=400&fit=crop&q=80"
+                alt="Radisson Blu Сочи" />
+              <div class="hotel-fav">🤍</div>
+              <div class="hotel-dots">
+                <div class="hotel-dot active"></div>
+                <div class="hotel-dot"></div>
+              </div>
+            </div>
+            <div class="hotel-body">
+              <div class="hotel-top">
+                <div class="hotel-name">Radisson Blu Paradise</div>
+                <div class="hotel-stars">5 ★</div>
+              </div>
+              <div class="hotel-meta">
+                <span class="hotel-rating">9.2</span>
+                <span class="hotel-reviews">312 оценок • Курортный отель</span>
+              </div>
+              <div class="hotel-location">Сочи • Адлер • 200 м до пляжа</div>
+              <div class="hotel-price-row"><span class="hotel-price-label">За 1 ночь</span></div>
+              <div class="hotel-price">От 8 900 ₽</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Promo Banner 2 -->
+      <div class="promo-banner" style="background:linear-gradient(100deg,#1a2a6c,#b21f1f,#fdbb2d);margin-bottom:36px;">
+        <div>
+          <h2>Отдыхайте в ОАЭ с выгодой: скидки до 50% на отели</h2>
+          <p>Шикарные пляжи и футуристические небоскребы ждут вас</p>
+        </div>
+        <button class="promo-cta">Отели &nbsp;→</button>
+      </div>
+
+      <!-- Popular Destinations -->
+      <div class="section-gap">
+        <div class="section-hd">
+          <h2>Бронируйте отели по всему миру</h2>
+          <a href="#">Все направления</a>
+        </div>
+        <div class="dest-scroll">
+          <div class="dest-card" onclick="openCopilotWithHotel('Отели в Санкт-Петербурге')">
+            <img class="dest-img"
+              src="https://images.unsplash.com/photo-1556103255-4443dbae8e5a?w=320&h=220&fit=crop&q=80"
+              alt="Санкт-Петербург" />
+            <div class="dest-body">
+              <div class="dest-country">Россия</div>
+              <div class="dest-city">Санкт-Петербург</div>
+              <div class="dest-price">от 900 ₽</div>
+            </div>
+          </div>
+          <div class="dest-card" onclick="openCopilotWithHotel('Отели в Москве')">
+            <img class="dest-img"
+              src="https://images.unsplash.com/photo-1520106212299-d99c443e4568?w=320&h=220&fit=crop&q=80"
+              alt="Москва" />
+            <div class="dest-body">
+              <div class="dest-country">Россия</div>
+              <div class="dest-city">Москва</div>
+              <div class="dest-price">от 1 000 ₽</div>
+            </div>
+          </div>
+          <div class="dest-card" onclick="openCopilotWithHotel('Отели в Сочи')">
+            <img class="dest-img"
+              src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=320&h=220&fit=crop&q=80" alt="Сочи" />
+            <div class="dest-body">
+              <div class="dest-country">Россия</div>
+              <div class="dest-city">Сочи</div>
+              <div class="dest-price">от 600 ₽</div>
+            </div>
+          </div>
+          <div class="dest-card" onclick="openCopilotWithHotel('Отели в Стамбуле')">
+            <img class="dest-img"
+              src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=320&h=220&fit=crop&q=80"
+              alt="Стамбул" />
+            <div class="dest-body">
+              <div class="dest-country">Турция</div>
+              <div class="dest-city">Стамбул</div>
+              <div class="dest-price">от 1 700 ₽</div>
+            </div>
+          </div>
+          <div class="dest-card" onclick="openCopilotWithHotel('Отели в Дубае')">
+            <img class="dest-img"
+              src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=320&h=220&fit=crop&q=80"
+              alt="Дубай" />
+            <div class="dest-body">
+              <div class="dest-country">ОАЭ</div>
+              <div class="dest-city">Дубай</div>
+              <div class="dest-price">от 2 900 ₽</div>
+            </div>
+          </div>
+          <div class="dest-card" onclick="openCopilotWithHotel('Отели на Пхукете')">
+            <img class="dest-img"
+              src="https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=320&h=220&fit=crop&q=80"
+              alt="Пхукет" />
+            <div class="dest-body">
+              <div class="dest-country">Таиланд</div>
+              <div class="dest-city">Пхукет</div>
+              <div class="dest-price">от 1 000 ₽</div>
+            </div>
+          </div>
+          <div class="dest-card" onclick="openCopilotWithHotel('Отели в Казани')">
+            <img class="dest-img"
+              src="https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=320&h=220&fit=crop&q=80"
+              alt="Казань" />
+            <div class="dest-body">
+              <div class="dest-country">Россия</div>
+              <div class="dest-city">Казань</div>
+              <div class="dest-price">от 1 600 ₽</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features -->
+      <div class="features">
+        <div class="feature-card">
+          <div class="feature-icon">💳</div>
+          <div>
+            <div class="feature-title">Кэшбэк за отели до 10%</div>
+            <div class="feature-desc">Начислим кэшбэк двумя частями за 62 дня при оплате картой Т-Банка</div>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌙</div>
+          <div>
+            <div class="feature-title">На связи днем и ночью</div>
+            <div class="feature-desc">Напишите в чат, и поддержка Т-Банка поможет с любым вопросом</div>
+          </div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌍</div>
+          <div>
+            <div class="feature-title">Миллион вариантов</div>
+            <div class="feature-desc">Отели, апартаменты, кемпинги и хостелы — будет что выбрать</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MOMENTS VIEW ──────────────────────────────────────────────────── -->
+    <div id="moments-view">
+      <div class="hero" style="padding-bottom:16px;">
+        <h1 style="font-size:32px;">✨ Travel Moments</h1>
+        <p>Реальные поездки клиентов Т-Банка — вдохновляйтесь и бронируйте</p>
+      </div>
+      <div class="moments-layout">
+
+        <!-- LEFT SIDEBAR -->
+        <div class="moments-sidebar-left">
+          <div class="moments-title">Популярные теги</div>
+          <div class="moments-sub">Фильтруй по настроению</div>
+          <div>
+            <span class="trending-tag" onclick="filterByTag(this, '🏖️ Пляжный отдых — лучшие пляжные курорты')">🏖️
+              Пляж</span>
+            <span class="trending-tag" onclick="filterByTag(this, '🏔️ Горный отдых — треккинг и горные курорты')">🏔️
+              Горы</span>
+            <span class="trending-tag"
+              onclick="filterByTag(this, '👨‍👩‍👧 Семейный отдых с детьми — анимация, бассейны, безопасность')">👨‍👩‍👧
+              Семья</span>
+            <span class="trending-tag"
+              onclick="filterByTag(this, '💑 Романтический отдых для двоих — уединение и атмосфера')">💑
+              Романтика</span>
+            <span class="trending-tag"
+              onclick="filterByTag(this, '💰 Отдых до 100 000 рублей — лучшие предложения по цене')">💰 До 100k</span>
+            <span class="trending-tag" onclick="filterByTag(this, '🌴 Тропический отдых — Бали, Пхукет, Мальдивы')">🌴
+              Тропики</span>
+            <span class="trending-tag"
+              onclick="filterByTag(this, '🏙️ Городской туризм — интересные города для путешествий')">🏙️ Города</span>
+            <span class="trending-tag"
+              onclick="filterByTag(this, '⛷️ Горнолыжный курорт — трассы, сноуборд, апре-ски')">⛷️ Лыжи</span>
+            <span class="trending-tag"
+              onclick="filterByTag(this, '🍜 Гастро-туризм — вкусная еда и кулинарные маршруты')">🍜 Гастро</span>
+            <span class="trending-tag"
+              onclick="filterByTag(this, '🎭 Культурный туризм — музеи, архитектура, история')">🎭 Культура</span>
+          </div>
+          <div style="margin-top:24px;">
+            <div class="moments-title">Как это работает</div>
+            <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;">
+                <div
+                  style="width:26px;height:26px;border-radius:50%;background:var(--yellow);display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">
+                  1</div>
+                <div style="color:var(--text-sub);padding-top:3px;">Смотрите видео от реальных путешественников</div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;">
+                <div
+                  style="width:26px;height:26px;border-radius:50%;background:var(--yellow);display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">
+                  2</div>
+                <div style="color:var(--text-sub);padding-top:3px;">Нажмите «Хочу так же» — Copilot подберёт похожий
+                  отпуск</div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;">
+                <div
+                  style="width:26px;height:26px;border-radius:50%;background:var(--yellow);display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">
+                  3</div>
+                <div style="color:var(--text-sub);padding-top:3px;">Получите кэшбэк до 10% при оплате картой Т-Банка
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CENTER: MOMENTS FEED -->
+        <div style="position:relative;">
+          <div class="moments-feed" id="momentsFeed">
+
+            <!-- ── Moment 0: Калининград ── -->
+            <div class="moment-slide" id="moment-0">
+              <div class="moment-bg" style="background:linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);">
+                <iframe class="moment-video"
+                  src="https://www.youtube-nocookie.com/embed/SuXpyTo6N9A?autoplay=1&mute=1&loop=1&playlist=SuXpyTo6N9A&controls=0&playsinline=1&rel=0&iv_load_policy=3&disablekb=1"
+                  frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+                  title="Калининград — Кёнигсберг"></iframe>
+                <div class="moment-video-label">▶ YouTube</div>
+              </div>
+              <div class="moment-sidebar-btns">
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">❤️</div><span>14.3к</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">💬</div><span>521</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">↗️</div><span>Поделиться</span>
+                </div>
+              </div>
+              <div class="moment-content">
+                <div class="moment-author">
+                  <div class="moment-avatar" style="background:linear-gradient(135deg,#0f3460,#e94560);">МС</div>
+                  <div>
+                    <div class="moment-author-name">Мария С.</div>
+                    <span class="moment-author-badge">✓ Реальный опыт</span>
+                  </div>
+                </div>
+                <div class="moment-location">🇷🇺 Калининград</div>
+                <div class="moment-desc">Кёнигсберг жив! 🏰 Кафедральный собор, янтарный музей, Рыбная деревня и кофейни
+                  на каждом углу. Уикенд на двоих — от 18 000 ₽ с поездом из Москвы!</div>
+                <div class="moment-tags">
+                  <span class="moment-tag">#Калининград</span>
+                  <span class="moment-tag">#Россия</span>
+                  <span class="moment-tag">#культура</span>
+                  <span class="moment-tag">#история</span>
+                </div>
+                <div class="moment-cta">
+                  <button class="btn-want-same"
+                    onclick="openCopilotWithHotel('Хочу такой же отдых в Калининграде — история, архитектура, уютный город')">
+                    🌟 Хочу так же
+                  </button>
+                  <button class="btn-book-now"
+                    onclick="wantSame('Калининград', 'культурный городской отдых', 18000)">Забронировать</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Moment 1: Байкал ── -->
+            <div class="moment-slide" id="moment-1">
+              <div class="moment-bg" style="background:linear-gradient(160deg,#0d1b2a 0%,#1b3a5c 50%,#2e6da4 100%);">
+                <iframe class="moment-video"
+                  src="https://www.youtube-nocookie.com/embed/qzXYPmm5T3Y?autoplay=1&mute=1&loop=1&playlist=qzXYPmm5T3Y&controls=0&playsinline=1&rel=0&iv_load_policy=3&disablekb=1"
+                  frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+                  title="Байкал 4K"></iframe>
+                <div class="moment-video-label">▶ YouTube</div>
+              </div>
+              <div class="moment-sidebar-btns">
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">❤️</div><span>9.1к</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">💬</div><span>347</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">↗️</div><span>Поделиться</span>
+                </div>
+              </div>
+              <div class="moment-content">
+                <div class="moment-author">
+                  <div class="moment-avatar" style="background:linear-gradient(135deg,#1b3a5c,#2e6da4);">АМ</div>
+                  <div>
+                    <div class="moment-author-name">Алексей М.</div>
+                    <span class="moment-author-badge">✓ Реальный опыт</span>
+                  </div>
+                </div>
+                <div class="moment-location">🇷🇺 Байкал, Иркутская область</div>
+                <div class="moment-desc">Зимний Байкал — это другая планета 🧊 Прозрачный лёд, трещины как молнии,
+                  тишина
+                  и звёздное небо. 5 ночей — от 42 000 ₽ на двоих!</div>
+                <div class="moment-tags">
+                  <span class="moment-tag">#Байкал</span>
+                  <span class="moment-tag">#Россия</span>
+                  <span class="moment-tag">#зима</span>
+                  <span class="moment-tag">#природа</span>
+                </div>
+                <div class="moment-cta">
+                  <button class="btn-want-same"
+                    onclick="openCopilotWithHotel('Хочу такой же отдых у Байкала — природа, озеро, спокойствие')">
+                    🌟 Хочу так же
+                  </button>
+                  <button class="btn-book-now"
+                    onclick="wantSame('Байкал, Иркутская область', 'природный отдых у озера', 42000)">Забронировать</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Moment 2: Горный Алтай ── -->
+            <div class="moment-slide" id="moment-2">
+              <div class="moment-bg" style="background:linear-gradient(160deg,#1a2a1a 0%,#2d5a27 50%,#4a8c3f 100%);">
+                <iframe class="moment-video"
+                  src="https://www.youtube-nocookie.com/embed/6zXhYoFdGxg?autoplay=1&mute=1&loop=1&playlist=6zXhYoFdGxg&controls=0&playsinline=1&rel=0&iv_load_policy=3&disablekb=1"
+                  frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+                  title="Горный Алтай 4K"></iframe>
+                <div class="moment-video-label">▶ YouTube</div>
+              </div>
+              <div class="moment-sidebar-btns">
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">❤️</div><span>7.4к</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">💬</div><span>289</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">↗️</div><span>Поделиться</span>
+                </div>
+              </div>
+              <div class="moment-content">
+                <div class="moment-author">
+                  <div class="moment-avatar" style="background:linear-gradient(135deg,#2d5a27,#4a8c3f);">ЕВ</div>
+                  <div>
+                    <div class="moment-author-name">Екатерина В.</div>
+                    <span class="moment-author-badge">✓ Реальный опыт</span>
+                  </div>
+                </div>
+                <div class="moment-location">🇷🇺 Горный Алтай</div>
+                <div class="moment-desc">Алтай летом — бирюзовые реки, перевалы, ночи у костра ⛺ Треккинг к Мультинским
+                  озёрам за 55 000 ₽ с дорогой из Москвы!</div>
+                <div class="moment-tags">
+                  <span class="moment-tag">#Алтай</span>
+                  <span class="moment-tag">#горы</span>
+                  <span class="moment-tag">#треккинг</span>
+                  <span class="moment-tag">#Россия</span>
+                </div>
+                <div class="moment-cta">
+                  <button class="btn-want-same"
+                    onclick="openCopilotWithHotel('Хочу такой же отдых в Горном Алтае — треккинг, глэмпинг, природа')">
+                    🌟 Хочу так же
+                  </button>
+                  <button class="btn-book-now"
+                    onclick="wantSame('Горный Алтай', 'треккинг в горах + глэмпинг', 55000)">Забронировать</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Moment 3: Роза Хутор / Сочи ── -->
+            <div class="moment-slide" id="moment-3">
+              <div class="moment-bg" style="background:linear-gradient(160deg,#0d1f3c 0%,#1a3a5c 50%,#2660a0 100%);">
+                <iframe class="moment-video"
+                  src="https://www.youtube-nocookie.com/embed/1WVOCezxVvY?autoplay=1&mute=1&loop=1&playlist=1WVOCezxVvY&controls=0&playsinline=1&rel=0&iv_load_policy=3&disablekb=1"
+                  frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+                  title="Роза Хутор Сочи"></iframe>
+                <div class="moment-video-label">▶ YouTube</div>
+              </div>
+              <div class="moment-sidebar-btns">
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">❤️</div><span>5.8к</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">💬</div><span>231</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">↗️</div><span>Поделиться</span>
+                </div>
+              </div>
+              <div class="moment-content">
+                <div class="moment-author">
+                  <div class="moment-avatar" style="background:linear-gradient(135deg,#1a3a5c,#2660a0);">ИС</div>
+                  <div>
+                    <div class="moment-author-name">Ирина С.</div>
+                    <span class="moment-author-badge">✓ Реальный опыт</span>
+                  </div>
+                </div>
+                <div class="moment-location">🇷🇺 Роза Хутор, Сочи</div>
+                <div class="moment-desc">Лучший горнолыжный отдых в жизни! Снег, трассы, глинтвейн ☕ Семья из 4 человек
+                  — всё включено за 120 000 ₽</div>
+                <div class="moment-tags">
+                  <span class="moment-tag">#горы</span>
+                  <span class="moment-tag">#сноуборд</span>
+                  <span class="moment-tag">#семья</span>
+                  <span class="moment-tag">#Сочи</span>
+                </div>
+                <div class="moment-cta">
+                  <button class="btn-want-same"
+                    onclick="openCopilotWithHotel('Хочу такой же отдых на Розе Хутор — горные лыжи, семья, Сочи')">
+                    🌟 Хочу так же
+                  </button>
+                  <button class="btn-book-now"
+                    onclick="wantSame('Роза Хутор, Сочи', 'горнолыжный курорт для семьи', 120000)">Забронировать</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Moment 4: Санкт-Петербург ── -->
+            <div class="moment-slide" id="moment-4">
+              <div class="moment-bg" style="background:linear-gradient(160deg,#1c1c3a 0%,#2d2d6b 50%,#4a4a9e 100%);">
+                <iframe class="moment-video"
+                  src="https://www.youtube-nocookie.com/embed/RTUAKyzsDvs?autoplay=1&mute=1&loop=1&playlist=RTUAKyzsDvs&controls=0&playsinline=1&rel=0&iv_load_policy=3&disablekb=1"
+                  frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+                  title="Санкт-Петербург"></iframe>
+                <div class="moment-video-label">▶ YouTube</div>
+              </div>
+              <div class="moment-sidebar-btns">
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">❤️</div><span>6.3к</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">💬</div><span>274</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">↗️</div><span>Поделиться</span>
+                </div>
+              </div>
+              <div class="moment-content">
+                <div class="moment-author">
+                  <div class="moment-avatar" style="background:linear-gradient(135deg,#2d2d6b,#4a4a9e);">МП</div>
+                  <div>
+                    <div class="moment-author-name">Марина П.</div>
+                    <span class="moment-author-badge">✓ Реальный опыт</span>
+                  </div>
+                </div>
+                <div class="moment-location">🇷🇺 Санкт-Петербург</div>
+                <div class="moment-desc">Белые ночи в Питере — это магия 🌃 Эрмитаж, развод мостов, набережные. 4 дня в
+                  отеле в центре — 38 000 ₽ с ж/д билетами!</div>
+                <div class="moment-tags">
+                  <span class="moment-tag">#СПб</span>
+                  <span class="moment-tag">#культура</span>
+                  <span class="moment-tag">#Россия</span>
+                  <span class="moment-tag">#белыеночи</span>
+                </div>
+                <div class="moment-cta">
+                  <button class="btn-want-same"
+                    onclick="openCopilotWithHotel('Хочу такой же отдых в Санкт-Петербурге — культура, белые ночи')">
+                    🌟 Хочу так же
+                  </button>
+                  <button class="btn-book-now"
+                    onclick="wantSame('Санкт-Петербург', 'культурный отдых + белые ночи', 38000)">Забронировать</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Moment 5: Казань ── -->
+            <div class="moment-slide" id="moment-5">
+              <div class="moment-bg" style="background:linear-gradient(160deg,#3d1f00 0%,#7a3e00 50%,#c86400 100%);">
+                <iframe class="moment-video"
+                  src="https://www.youtube-nocookie.com/embed/GCYsYxcdtn8?autoplay=1&mute=1&loop=1&playlist=GCYsYxcdtn8&controls=0&playsinline=1&rel=0&iv_load_policy=3&disablekb=1"
+                  frameborder="0" allow="autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+                  title="Казань туризм"></iframe>
+                <div class="moment-video-label">▶ YouTube</div>
+              </div>
+              <div class="moment-sidebar-btns">
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">❤️</div><span>4.7к</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">💬</div><span>198</span>
+                </div>
+                <div class="moment-btn">
+                  <div class="moment-btn-icon">↗️</div><span>Поделиться</span>
+                </div>
+              </div>
+              <div class="moment-content">
+                <div class="moment-author">
+                  <div class="moment-avatar" style="background:linear-gradient(135deg,#7a3e00,#c86400);">ОЛ</div>
+                  <div>
+                    <div class="moment-author-name">Ольга Л.</div>
+                    <span class="moment-author-badge">✓ Реальный опыт</span>
+                  </div>
+                </div>
+                <div class="moment-location">🇷🇺 Казань, Татарстан</div>
+                <div class="moment-desc">Казань — третья столица России 🕌 Кремль, улица Баумана, эчпочмак и чак-чак.
+                  Выходные на двоих — от 22 000 ₽ с поездом!</div>
+                <div class="moment-tags">
+                  <span class="moment-tag">#Казань</span>
+                  <span class="moment-tag">#история</span>
+                  <span class="moment-tag">#гастро</span>
+                  <span class="moment-tag">#Россия</span>
+                </div>
+                <div class="moment-cta">
+                  <button class="btn-want-same"
+                    onclick="openCopilotWithHotel('Хочу такой же отдых в Казани — город, еда, татарская культура')">
+                    🌟 Хочу так же
+                  </button>
+                  <button class="btn-book-now"
+                    onclick="wantSame('Казань, Татарстан', 'городской отдых + татарская кухня', 22000)">Забронировать</button>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /moments-feed -->
+
+          <!-- Scroll dots -->
+          <div class="moments-dots" id="momentsDots">
+            <div class="mdot active" onclick="scrollToMoment(0)"></div>
+            <div class="mdot" onclick="scrollToMoment(1)"></div>
+            <div class="mdot" onclick="scrollToMoment(2)"></div>
+            <div class="mdot" onclick="scrollToMoment(3)"></div>
+            <div class="mdot" onclick="scrollToMoment(4)"></div>
+            <div class="mdot" onclick="scrollToMoment(5)"></div>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR: Suggested Hotels -->
+        <div class="moments-sidebar-right">
+          <div class="moments-title" style="margin-bottom:14px;">Похожие варианты</div>
+
+          <div class="suggested-hotel" onclick="openCopilotWithHotel('Отели у Байкала Листвянка')">
+            <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=200&h=180&fit=crop&q=80"
+              alt="Байкал" />
+            <div class="suggested-hotel-body">
+              <div class="suggested-hotel-name">Байкал Резорт</div>
+              <div class="suggested-hotel-loc">🇷🇺 Листвянка, Байкал</div>
+              <div class="suggested-hotel-footer">
+                <div class="suggested-hotel-price">от 4 800 ₽</div>
+                <div class="suggested-hotel-rating">9.1</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="suggested-hotel" onclick="openCopilotWithHotel('Глэмпинг Горный Алтай')">
+            <img src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=200&h=180&fit=crop&q=80"
+              alt="Алтай" />
+            <div class="suggested-hotel-body">
+              <div class="suggested-hotel-name">Altai Village Glamping</div>
+              <div class="suggested-hotel-loc">🇷🇺 Горный Алтай</div>
+              <div class="suggested-hotel-footer">
+                <div class="suggested-hotel-price">от 6 300 ₽</div>
+                <div class="suggested-hotel-rating">9.3</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="suggested-hotel" onclick="openCopilotWithHotel('Горнолыжный отель Сочи Роза Хутор')">
+            <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=200&h=180&fit=crop&q=80"
+              alt="Роза Хутор" />
+            <div class="suggested-hotel-body">
+              <div class="suggested-hotel-name">Rosa Springs Resort</div>
+              <div class="suggested-hotel-loc">🇷🇺 Роза Хутор, Сочи</div>
+              <div class="suggested-hotel-footer">
+                <div class="suggested-hotel-price">от 9 400 ₽</div>
+                <div class="suggested-hotel-rating">9.0</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="suggested-hotel" onclick="openCopilotWithHotel('Отели в центре Санкт-Петербурга')">
+            <img src="https://images.unsplash.com/photo-1556103255-4443dbae8e5a?w=200&h=180&fit=crop&q=80"
+              alt="Санкт-Петербург" />
+            <div class="suggested-hotel-body">
+              <div class="suggested-hotel-name">Astoria Hotel SPb</div>
+              <div class="suggested-hotel-loc">🇷🇺 Санкт-Петербург</div>
+              <div class="suggested-hotel-footer">
+                <div class="suggested-hotel-price">от 7 200 ₽</div>
+                <div class="suggested-hotel-rating">9.4</div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            style="margin-top:6px;background:linear-gradient(135deg,#FFDD2D22,#FFA50022);border:1.5px dashed #FFDD2D;border-radius:14px;padding:16px;text-align:center;">
+            <div style="font-size:22px;margin-bottom:6px;">✨</div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:4px;">AI поможет выбрать</div>
+            <div style="font-size:12px;color:var(--text-sub);margin-bottom:10px;">Загрузите фото или опишите мечту —
+              подберём идеальный вариант</div>
+            <button onclick="toggleCopilot()"
+              style="width:100%;background:var(--yellow);color:#000;font-weight:700;font-size:13px;padding:9px;border-radius:10px;cursor:pointer;border:none;">Открыть
+              Copilot ✨</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+     PROFILE VIEW
+══════════════════════════════════════════════════════════════════════ -->
+    <div id="profile-view" style="display:none;">
+
+      <!-- Hero -->
+      <div class="profile-hero">
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar" id="profileAvatarBig">У</div>
+          <div class="profile-avatar-edit" onclick="document.getElementById('profileAvatarInput').click()"
+            title="Сменить фото">✏️</div>
+          <input type="file" id="profileAvatarInput" accept="image/*" style="display:none;"
+            onchange="uploadAvatar(this)" />
+        </div>
+        <div class="profile-hero-info">
+          <div class="profile-name" id="profileNameDisplay" onclick="startEditName()">Путешественник</div>
+          <input class="profile-name-edit" id="profileNameInput" type="text" placeholder="Ваше имя"
+            onblur="saveProfileName()" onkeydown="if(event.key==='Enter')saveProfileName()" />
+          <div class="profile-email" id="profileEmailDisplay">—</div>
+          <div class="profile-badge">✈️ Участник Т-Путешествий</div>
+        </div>
+        <div class="profile-hero-actions">
+          <button class="profile-edit-btn" onclick="startEditName()">✏️ Редактировать</button>
+          <button class="profile-signout-btn" onclick="signOut()">Выйти</button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon blue">✈️</div>
+          <div class="stat-value" id="statTrips">3</div>
+          <div class="stat-label">Поездки</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon green">🌍</div>
+          <div class="stat-value" id="statCities">5</div>
+          <div class="stat-label">Города</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon amber">💳</div>
+          <div class="stat-value" id="statSpent">87k ₽</div>
+          <div class="stat-label">Потрачено</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon yellow">⭐</div>
+          <div class="stat-value" id="statCashback">4 230 ₽</div>
+          <div class="stat-label">Кэшбэк получено</div>
+        </div>
+      </div>
+
+      <!-- My Travel Moments -->
+      <div class="profile-section">
+        <div class="profile-section-hd">
+          <h2>🎬 Мои Travel Moments</h2>
+          <button class="auth-submit" style="width:auto;padding:10px 20px;font-size:13px;" onclick="openUploadModal()">+
+            Загрузить видео</button>
+        </div>
+
+        <!-- Upload zone -->
+        <div class="upload-zone" id="uploadZone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"
+          ondrop="handleDrop(event)">
+          <input type="file" id="videoFileInput" accept="video/*" onchange="onVideoSelected(this)" />
+          <div class="upload-icon">🎥</div>
+          <h3>Поделись своим путешествием</h3>
+          <p>Перетащи видео сюда или нажми кнопку<br />MP4, MOV, AVI · до 100 МБ</p>
+          <div class="upload-btn">Выбрать файл</div>
+        </div>
+
+        <!-- Upload progress -->
+        <div class="upload-progress-wrap" id="uploadProgressWrap">
+          <div class="upload-progress-header">
+            <span id="uploadFileName">video.mp4</span>
+            <span id="uploadPercent">0%</span>
+          </div>
+          <div class="upload-progress-bar-bg">
+            <div class="upload-progress-bar" id="uploadProgressBar"></div>
+          </div>
+        </div>
+
+        <!-- Grid uploaded -->
+        <div class="my-moments-grid" id="myMomentsGrid" style="margin-top:16px;">
+          <!-- Sample moments -->
+          <div class="my-moment-card">
+            <img src="https://picsum.photos/id/177/400/700" alt="Пхукет" />
+            <div class="my-moment-card-overlay">
+              <span class="my-moment-status published">✓ Опубликовано</span>
+              <div class="my-moment-card-title">Пхукет, Таиланд 🌴</div>
+            </div>
+            <button class="my-moment-delete" onclick="deleteMoment(this)">✕</button>
+          </div>
+          <div class="my-moment-card">
+            <img src="https://picsum.photos/id/219/400/700" alt="Стамбул" />
+            <div class="my-moment-card-overlay">
+              <span class="my-moment-status pending">⏳ На модерации</span>
+              <div class="my-moment-card-title">Стамбул, Турция 🕌</div>
+            </div>
+            <button class="my-moment-delete" onclick="deleteMoment(this)">✕</button>
+          </div>
+          <div class="my-moment-card" style="border:2px dashed var(--border);background:var(--bg);cursor:pointer;"
+            onclick="document.getElementById('videoFileInput').click()">
+            <div
+              style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text-sub);">
+              <div style="font-size:28px;margin-bottom:8px;">+</div>
+              <div style="font-size:12px;font-weight:600;">Добавить</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trips history -->
+      <div class="profile-section">
+        <div class="profile-section-hd">
+          <h2>🧳 История поездок</h2>
+          <a href="#" style="font-size:14px;color:var(--blue);font-weight:600;">Все заказы →</a>
+        </div>
+        <div class="trips-list">
+          <div class="trip-item">
+            <div class="trip-icon">🏖️</div>
+            <div class="trip-info">
+              <div class="trip-hotel">Kata Rocks Resort</div>
+              <div class="trip-meta">Пхукет, Таиланд · 14–21 фев 2026 · 2 гостя</div>
+            </div>
+            <div>
+              <div class="trip-price">58 400 ₽</div>
+              <div class="trip-cashback">+5 840 ₽ кэшбэк</div>
+            </div>
+            <span class="trip-status completed">Завершена</span>
+          </div>
+          <div class="trip-item">
+            <div class="trip-icon">⛷️</div>
+            <div class="trip-info">
+              <div class="trip-hotel">Rosa Springs Resort</div>
+              <div class="trip-meta">Роза Хутор, Сочи · 7–10 мар 2026 · 2 гостя</div>
+            </div>
+            <div>
+              <div class="trip-price">28 200 ₽</div>
+              <div class="trip-cashback">+2 820 ₽ кэшбэк</div>
+            </div>
+            <span class="trip-status upcoming">Предстоит</span>
+          </div>
+          <div class="trip-item">
+            <div class="trip-icon">🏙️</div>
+            <div class="trip-info">
+              <div class="trip-hotel">Pera Palace Hotel</div>
+              <div class="trip-meta">Стамбул, Турция · 20–25 дек 2025 · 2 гостя</div>
+            </div>
+            <div>
+              <div class="trip-price">35 500 ₽</div>
+              <div class="trip-cashback">+3 550 ₽ кэшбэк</div>
+            </div>
+            <span class="trip-status completed">Завершена</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div class="profile-section">
+        <div class="profile-section-hd">
+          <h2>⚙️ Настройки</h2>
+        </div>
+        <div class="settings-card">
+          <div class="settings-row" onclick="startEditName()">
+            <div class="settings-row-left">
+              <div class="settings-row-icon" style="background:#eff6ff;">👤</div>
+              <div>
+                <div class="settings-row-label">Профиль</div>
+                <div class="settings-row-sub" id="settingsNameSub">Имя, аватар</div>
+              </div>
+            </div>
+            <span class="settings-row-arrow">›</span>
+          </div>
+          <div class="settings-row" onclick="openAuthModal('login')">
+            <div class="settings-row-left">
+              <div class="settings-row-icon" style="background:#fef9e7;">🔐</div>
+              <div>
+                <div class="settings-row-label">Безопасность</div>
+                <div class="settings-row-sub">Пароль, email</div>
+              </div>
+            </div>
+            <span class="settings-row-arrow">›</span>
+          </div>
+          <div class="settings-row">
+            <div class="settings-row-left">
+              <div class="settings-row-icon" style="background:#f0fdf4;">🔔</div>
+              <div>
+                <div class="settings-row-label">Уведомления</div>
+                <div class="settings-row-sub">Email о ценах, акциях</div>
+              </div>
+            </div>
+            <span class="settings-row-arrow">›</span>
+          </div>
+          <div class="settings-row" onclick="signOut()">
+            <div class="settings-row-left">
+              <div class="settings-row-icon" style="background:#fff1f2;">🚪</div>
+              <div>
+                <div class="settings-row-label" style="color:#ef4444;">Выйти из аккаунта</div>
+                <div class="settings-row-sub">Завершить сессию</div>
+              </div>
+            </div>
+            <span class="settings-row-arrow" style="color:#ef4444;">›</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /#profile-view -->
+
+    <!-- ══ UPLOAD MODAL ══════════════════════════════════════════════════ -->
+    <div class="upload-modal-overlay" id="uploadModalOverlay" onclick="handleUploadOverlayClick(event)">
+      <div class="upload-modal">
+        <h2>🎬 Публикация Moment</h2>
+        <p>Поделись своим путешествием с сообществом Т-Банка</p>
+
+        <div class="um-preview" id="umPreview">
+          <span style="color:rgba(255,255,255,.3);font-size:14px;">Предпросмотр видео</span>
+        </div>
+
+        <div class="um-field">
+          <label>Направление / место</label>
+          <input type="text" id="umLocation" placeholder="Например: Пхукет, Таиланд 🌴" />
+        </div>
+        <div class="um-field">
+          <label>Подпись</label>
+          <textarea id="umCaption" placeholder="Расскажи об этом месте..."></textarea>
+        </div>
+        <div class="um-field">
+          <label>Теги</label>
+          <input type="text" id="umTags" placeholder="#пляж #отдых #2026" />
+        </div>
+
+        <div class="um-actions">
+          <button class="um-cancel" onclick="closeUploadModal()">Отмена</button>
+          <button class="um-publish" id="umPublishBtn" onclick="publishMoment()">Опубликовать →</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <div class="footer-strip">
+    Сервис предоставляется ООО «Т-Путешествия» &nbsp;·&nbsp;
+    <a href="#">Правила сервиса</a> &nbsp;·&nbsp;
+    <a href="#">Политика обработки персональных данных</a> &nbsp;·&nbsp;
+    © 2026 АО «Т-Банк»
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     COPILOT OVERLAY
+══════════════════════════════════════════════════════════════════════ -->
+  <div class="copilot-overlay" id="copilotOverlay" onclick="toggleCopilot()"></div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     COPILOT FAB
+══════════════════════════════════════════════════════════════════════ -->
+  <button class="copilot-fab" onclick="toggleCopilot()" id="copilotFab">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      <path d="M8 10h.01M12 10h.01M16 10h.01" stroke-width="2.5" stroke-linecap="round" />
+    </svg>
+    <div class="fab-dot"></div>
+    AI Travel Copilot
+  </button>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     COPILOT SIDEBAR
+══════════════════════════════════════════════════════════════════════ -->
+  <div class="copilot-sidebar" id="copilotSidebar">
+
+    <div class="copilot-header">
+      <div class="copilot-header-left">
+        <div class="copilot-avatar-wrap">✨</div>
+        <div>
+          <div class="copilot-name">AI Travel Copilot</div>
+          <div class="copilot-status">Онлайн</div>
+        </div>
+      </div>
+      <button class="copilot-close" onclick="toggleCopilot()">✕</button>
+    </div>
+
+    <div class="copilot-quick-actions">
+      <span class="qa-chip" onclick="sendQuickAction('🏖️ Пляжный отдых в марте')">🏖️ Пляж в марте</span>
+      <span class="qa-chip" onclick="sendQuickAction('🏔️ Горы для двоих с романтикой')">🏔️ Горы романтика</span>
+      <span class="qa-chip" onclick="sendQuickAction('👨‍👩‍👧 Семейный отдых с детьми до 100k')">👨‍👩‍👧 С
+        детьми</span>
+      <span class="qa-chip" onclick="sendQuickAction('💰 Самые выгодные предложения недели')">💰 Выгодно</span>
+      <span class="qa-chip"
+        style="background:linear-gradient(135deg,#FF0050,#FF6B35);color:#fff;border-color:transparent;"
+        onclick="promptVideoUrl()">🎬 Видео из TikTok/Reels</span>
+    </div>
+
+    <div class="copilot-messages" id="copilotMessages">
+      <!-- Welcome message -->
+      <div class="msg bot fade-in">
+        <div class="msg-avatar">✨</div>
+        <div>
+          <div class="msg-bubble">
+            Привет! 👋 Я помогу найти идеальный отпуск.<br /><br />
+            <b>Что умею:</b><br />
+            🖼️ Найти место по вашей фотографии<br />
+            🎬 Найти отель/место по ссылке из TikTok, Reels, Shorts<br />
+            💬 Подобрать отель под любые запросы<br />
+            💳 Показать лучший кэшбэк от Т-Банка<br /><br />
+            Расскажи, куда хочешь, загрузи фото или скинь ссылку на видео!
+          </div>
+          <div class="msg-time">сейчас</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="upload-progress" id="uploadProgress">
+      <div class="upload-progress-bar" id="uploadProgressBar"></div>
+    </div>
+
+    <div class="copilot-input-area">
+      <div class="copilot-input-wrap">
+        <label class="upload-btn-label" title="Загрузить фото">
+          <input type="file" accept="image/*" onchange="handleImageUpload(event)" />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <polyline points="21 15 16 10 5 21" />
+          </svg>
+        </label>
+        <button class="video-link-btn" onclick="promptVideoUrl()" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <polygon points="5 3 19 12 5 21 5 3" />
+          </svg>
+          <span class="vbtn-tooltip">Ссылка на TikTok / Reels / Shorts</span>
+        </button>
+        <input type="text" id="copilotInput" placeholder="Напишите куда хочешь или вставьте ссылку на видео..."
+          onkeydown="handleEnter(event)" />
+      </div>
+      <button class="send-btn" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="22" y1="2" x2="11" y2="13" />
+          <polygon points="22 2 15 22 11 13 2 9 22 2" />
+        </svg>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════════════════════ -->
+  <script>
+    // ── STATE ──────────────────────────────────────────────────────────────
+    let copilotOpen = false;
+    let activeTab = 'hotels';
+    let currentMoment = 0;
+    const totalMoments = 5;
+
+    // ── TAB SWITCHING ──────────────────────────────────────────────────────
+    function switchTab(tab) {
+      activeTab = tab;
+      const hotelsView = document.getElementById('hotels-view');
+      const momentsView = document.getElementById('moments-view');
+      const profileView = document.getElementById('profile-view');
+      const breadcrumb = document.getElementById('breadcrumbCurrent');
+
+      // hide all views
+      hotelsView.style.display = 'none';
+      momentsView.style.display = 'none';
+      profileView.style.display = 'none';
+
+      document.querySelectorAll('.cat-item').forEach(el => el.classList.remove('active'));
+
+      if (tab === 'moments') {
+        momentsView.style.display = 'block';
+        momentsView.style.animation = 'none';
+        requestAnimationFrame(() => { momentsView.style.animation = 'fadeIn .3s ease both'; });
+        document.getElementById('tabMoments').classList.add('active');
+        breadcrumb.textContent = 'Travel Moments';
+      } else if (tab === 'profile') {
+        profileView.style.display = 'block';
+        breadcrumb.textContent = 'Личный кабинет';
+      } else if (tab === 'hotels') {
+        hotelsView.style.display = 'block';
+        document.getElementById('tabHotels').classList.add('active');
+        breadcrumb.textContent = 'Отели';
+      } else {
+        hotelsView.style.display = 'block';
+        document.getElementById('tabHotels').classList.add('active');
+        breadcrumb.textContent = tab.charAt(0).toUpperCase() + tab.slice(1);
+      }
+    }
+
+    // ── MOMENTS SCROLL SYNC ────────────────────────────────────────────────
+    function scrollToMoment(idx) {
+      const feed = document.getElementById('momentsFeed');
+      feed.scrollTo({ top: idx * 680, behavior: 'smooth' });
+    }
+
+    document.getElementById('momentsFeed').addEventListener('scroll', function () {
+      const idx = Math.round(this.scrollTop / 680);
+      currentMoment = idx;
+      document.querySelectorAll('.mdot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === idx);
+      });
+    });
+
+    // ── COPILOT OPEN/CLOSE ─────────────────────────────────────────────────
+    function toggleCopilot() {
+      copilotOpen = !copilotOpen;
+      const sidebar = document.getElementById('copilotSidebar');
+      const overlay = document.getElementById('copilotOverlay');
+      const fab = document.getElementById('copilotFab');
+      sidebar.classList.toggle('open', copilotOpen);
+      overlay.classList.toggle('show', copilotOpen);
+      fab.style.display = copilotOpen ? 'none' : 'flex';
+    }
+
+    function openCopilot() {
+      if (!copilotOpen) toggleCopilot();
+    }
+
+    // ── OPEN COPILOT WITH PREFILLED HOTEL ─────────────────────────────────
+    function openCopilotWithHotel(query) {
+      openCopilot();
+      setTimeout(() => {
+        const input = document.getElementById('copilotInput');
+        input.value = query;
+        input.focus();
+      }, 350);
+    }
+
+    // ── "ХОЧУ ТАК ЖЕ" FROM MOMENTS ────────────────────────────────────────
+    // ── Маппинг destinationId для tbank.ru/travel ─────────────────────────
+    // Каждая запись: { city: <название для поиска>, id: <destinationId> }
+    // Для регионов без прямого города — маппим на ближайший крупный город.
+    // Казань (90229) подтверждена из URL; остальные — совпадают с форматом.
+    const DEST_MAP = {
+      // ── Текущие моменты ──
+      'Калининград': { city: 'Калининград', id: '90070' },
+      'Байкал': { city: 'Иркутск', id: '90060' },
+      'Горный Алтай': { city: 'Горно-Алтайск', id: '90391' },
+      'Роза Хутор': { city: 'Сочи', id: '90153' },
+      'Казань': { city: 'Казань', id: '90229' }, // ✓ подтверждён
+      'Санкт-Петербург': { city: 'Санкт-Петербург', id: '90112' },
+      // ── Россия ──
+      'Москва': { city: 'Москва', id: '90001' },
+      'Сочи': { city: 'Сочи', id: '90153' },
+      'Краснодар': { city: 'Краснодар', id: '90134' },
+      'Екатеринбург': { city: 'Екатеринбург', id: '90050' },
+      'Новосибирск': { city: 'Новосибирск', id: '90024' },
+      'Нижний Новгород': { city: 'Нижний Новгород', id: '90085' },
+      'Калининград': { city: 'Калининград', id: '90070' },
+      'Владивосток': { city: 'Владивосток', id: '90030' },
+      'Иркутск': { city: 'Иркутск', id: '90060' },
+      'Красноярск': { city: 'Красноярск', id: '90075' },
+      'Уфа': { city: 'Уфа', id: '90180' },
+      'Пермь': { city: 'Пермь', id: '90103' },
+      'Волгоград': { city: 'Волгоград', id: '90033' },
+      'Самара': { city: 'Самара', id: '90140' },
+      'Ростов-на-Дону': { city: 'Ростов-на-Дону', id: '90135' },
+      'Тюмень': { city: 'Тюмень', id: '90170' },
+      'Хабаровск': { city: 'Хабаровск', id: '90185' },
+      'Мурманск': { city: 'Мурманск', id: '90082' },
+      'Архангельск': { city: 'Архангельск', id: '90010' },
+      'Астрахань': { city: 'Астрахань', id: '90012' },
+      'Казань': { city: 'Казань', id: '90229' },
+      // ── СНГ ──
+      'Алматы': { city: 'Алматы', id: '90400' },
+      'Астана': { city: 'Астана', id: '90401' },
+      'Ташкент': { city: 'Ташкент', id: '90450' },
+      'Бишкек': { city: 'Бишкек', id: '90410' },
+      'Минск': { city: 'Минск', id: '90350' },
+      'Тбилиси': { city: 'Тбилиси', id: '90300' },
+      'Баку': { city: 'Баку', id: '90320' },
+      'Ереван': { city: 'Ереван', id: '90310' },
+    };
+
+    /** Возвращает ближайшие выходные { from: 'YYYY-MM-DD', to: 'YYYY-MM-DD' } */
+    function getNextWeekendDates() {
+      const today = new Date();
+      const day = today.getDay(); // 0=Вс, 1=Пн ... 6=Сб
+      const daysToSat = day === 6 ? 0 : (6 - day) || 7;
+      const dateFrom = new Date(today);
+      dateFrom.setDate(today.getDate() + daysToSat);
+      const dateTo = new Date(dateFrom);
+      dateTo.setDate(dateFrom.getDate() + 1); // воскресенье
+      const fmt = d => [
+        d.getFullYear(),
+        String(d.getMonth() + 1).padStart(2, '0'),
+        String(d.getDate()).padStart(2, '0')
+      ].join('-');
+      return { from: fmt(dateFrom), to: fmt(dateTo) };
+    }
+
+    function wantSame(destination, style, budget) {
+      // Берём первую часть до запятой: 'Байкал, Иркутская область' → 'Байкал'
+      const key = destination.split(',')[0].trim();
+      const entry = DEST_MAP[key];
+      const dates = getNextWeekendDates();
+
+      let url;
+      if (entry) {
+        // Знаем город и ID — открываем прямо страницу результатов
+        const params = new URLSearchParams({
+          guests: '2',
+          locationCode: 'city',
+          dateFrom: dates.from,
+          dateTo: dates.to,
+          destination: entry.city,
+          destinationId: entry.id,
+          searchSource: 'Search'
+        });
+        url = `https://www.tbank.ru/travel/hotels/new/search/?${params.toString()}`;
+      } else {
+        // Нет в маппинге — открываем главную страницу отелей (без кеша)
+        url = 'https://www.tbank.ru/travel/hotels/';
+      }
+      window.open(url, '_blank');
+    }
+
+    function respondToWantSame(destination, budget) {
+      const responses = {
+        'Пхукет': {
+          intro: `Отличный выбор! 🌴 Пхукет — один из лучших пляжных курортов. Подбираю отели в вашем бюджете до ${(budget / 1000).toFixed(0)}k ₽:`,
+          hotels: [
+            { name: 'Kata Rocks Resort', loc: 'Пхукет · Ката-Ной', price: '5 800 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=400&h=300&fit=crop&q=80' },
+            { name: 'Bandara Resort & Spa', loc: 'Пхукет · Самуй', price: '3 200 ₽', rating: '8.7', img: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=400&h=300&fit=crop&q=80' },
+          ]
+        },
+        'Дубай': {
+          intro: `Дубай — это шик! ✨ Вот топ отелей под ваш запрос с кэшбэком до 10%:`,
+          hotels: [
+            { name: 'Atlantis The Palm', loc: 'Дубай · Palm Jumeirah', price: '18 900 ₽', rating: '9.1', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&h=300&fit=crop&q=80' },
+            { name: 'JW Marriott Marquis', loc: 'Дубай · Business Bay', price: '11 400 ₽', rating: '9.3', img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&q=80' },
+          ]
+        },
+        'Роза Хутор': {
+          intro: `Горнолыжный отдых в Сочи — отличный выбор для семьи! ⛷️ Нашёл варианты на Розе Хутор:`,
+          hotels: [
+            { name: 'Rosa Springs Resort', loc: 'Сочи · Роза Хутор', price: '9 400 ₽', rating: '9.0', img: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop&q=80' },
+            { name: 'Ski Inn Rosa', loc: 'Сочи · Эсто-Садок', price: '5 600 ₽', rating: '8.6', img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop&q=80' },
+          ]
+        },
+        'Стамбул': {
+          intro: `Стамбул за 45k — реально! 🕌 Вот отели в историческом центре:`,
+          hotels: [
+            { name: 'Pera Palace Hotel', loc: 'Стамбул · Бейоглу', price: '7 100 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&h=300&fit=crop&q=80' },
+            { name: 'Sirkeci Mansion', loc: 'Стамбул · Сиркеджи', price: '4 300 ₽', rating: '8.9', img: 'https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?w=400&h=300&fit=crop&q=80' },
+          ]
+        },
+        'Бали': {
+          intro: `Бали в марте — лучшее время! 🌺 Нашёл виллы с бассейном в вашем бюджете:`,
+          hotels: [
+            { name: 'Villa Seminyak Estate', loc: 'Бали · Семиньяк', price: '4 500 ₽', rating: '9.5', img: 'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=400&h=300&fit=crop&q=80' },
+            { name: 'Ubud Hanging Gardens', loc: 'Бали · Убуд', price: '6 200 ₽', rating: '9.2', img: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop&q=80' },
+          ]
+        }
+      };
+
+      // Find matching response
+      const key = Object.keys(responses).find(k => destination.includes(k));
+      const resp = responses[key] || {
+        intro: `Подбираю лучшие варианты для ${destination} 🌍`,
+        hotels: [
+          { name: 'Grand Hotel', loc: destination, price: '5 000 ₽', rating: '9.0', img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&q=80' },
+        ]
+      };
+
+      addMessage('bot', resp.intro);
+      setTimeout(() => {
+        resp.hotels.forEach(h => addHotelCard(h));
+        setTimeout(() => {
+          addMessage('bot', `💳 Оплатите картой Т-Банка и получите кэшбэк до 10%! Выберите даты:`);
+          addBookingWidget(resp.hotels[0].name);
+        }, 150);
+      }, 200);
+    }
+
+    // ── TRENDING TAGS ──────────────────────────────────────────────────────
+    function filterByTag(el, query) {
+      // Снимаем active со всех тегов
+      document.querySelectorAll('.trending-tag').forEach(t => t.classList.remove('active'));
+      // Ставим active на нажатый
+      el.classList.add('active');
+      // Открываем копилот и отправляем запрос
+      openCopilot();
+      setTimeout(() => {
+        addMessage('user', query);
+        showTyping();
+        setTimeout(() => {
+          removeTyping();
+          generateTextResponse(query, true);
+        }, 1400);
+      }, 300);
+    }
+
+    // ── QUICK ACTIONS ──────────────────────────────────────────────────────
+    function sendQuickAction(text) {
+      addMessage('user', text);
+      showTyping();
+      setTimeout(() => {
+        removeTyping();
+        const responseMap = {
+          '🏖️ Пляжный отдых в марте': {
+            text: 'Март — отличное время для пляжа! ☀️ Топ направлений этого месяца:',
+            hotels: [
+              { name: 'Centara Grand Phuket', loc: 'Пхукет, Таиланд', price: '6 200 ₽', rating: '9.3', img: 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=400&h=300&fit=crop&q=80' },
+              { name: 'Sharm Dreams Resort', loc: 'Шарм-эль-Шейх, Египет', price: '4 100 ₽', rating: '8.8', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=300&fit=crop&q=80' },
+            ]
+          },
+          '🏔️ Горы для двоих с романтикой': {
+            text: 'Романтика в горах — моя специализация 💑 Вот лучшие варианты:',
+            hotels: [
+              { name: 'Mairi Park Hotel', loc: 'Архыз, Россия', price: '15 770 ₽', rating: '9.5', img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&q=80' },
+              { name: 'White Peak Hotel', loc: 'Архыз, Россия', price: '10 689 ₽', rating: '9.1', img: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop&q=80' },
+            ]
+          },
+          '👨‍👩‍👧 Семейный отдых с детьми до 100k': {
+            text: 'Семейный отдых с детьми — подберу с анимацией и детскими программами 🎡',
+            hotels: [
+              { name: 'Radisson Blu Paradise', loc: 'Сочи, Адлер', price: '8 900 ₽', rating: '9.2', img: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop&q=80' },
+              { name: 'Rosa Springs Resort', loc: 'Роза Хутор', price: '9 400 ₽', rating: '9.0', img: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop&q=80' },
+            ]
+          },
+          '💰 Самые выгодные предложения недели': {
+            text: '🔥 Горящие предложения этой недели — скидки до 50%:',
+            hotels: [
+              { name: 'Скайпарк Эсто-Садок', loc: 'Сочи, 170м до подъёмника', price: '5 500 ₽', rating: '8.5', img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop&q=80' },
+              { name: 'Bandara Phuket', loc: 'Пхукет, Таиланд', price: '3 200 ₽', rating: '8.7', img: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=400&h=300&fit=crop&q=80' },
+            ]
+          }
+        };
+
+        const resp = responseMap[text];
+        if (resp) {
+          addMessage('bot', resp.text);
+          setTimeout(() => {
+            resp.hotels.forEach(h => addHotelCard(h));
+          }, 300);
+        }
+      }, 1500);
+    }
+
+    // ── SEND TEXT MESSAGE ──────────────────────────────────────────────────
+    function sendMessage() {
+      const input = document.getElementById('copilotInput');
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+
+      // Auto-detect video URLs pasted into input
+      const videoInfo = detectVideoUrl(text);
+      if (videoInfo) {
+        openCopilot();
+        handleVideoUrl(videoInfo);
+        return;
+      }
+
+      addMessage('user', text);
+      showTyping();
+      setTimeout(() => {
+        removeTyping();
+        generateTextResponse(text);
+      }, 1600);
+    }
+
+    function handleEnter(e) {
+      if (e.key === 'Enter') sendMessage();
+    }
+
+    function generateTextResponse(text, fromTag = false) {
+      const lower = text.toLowerCase();
+      let resp, hotels = [];
+
+      if (lower.includes('пляж') || lower.includes('пляжный')) {
+        resp = '🏖️ Лучшие пляжные курорты с кэшбэком до 10%:';
+        hotels = [
+          { name: 'Centara Grand Phuket', loc: 'Пхукет, Таиланд', price: '6 200 ₽', rating: '9.3', img: 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=400&h=300&fit=crop&q=80' },
+          { name: 'Sharm Dreams Resort', loc: 'Шарм-эль-Шейх, Египет', price: '4 100 ₽', rating: '8.8', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=300&fit=crop&q=80' },
+        ];
+      } else if (lower.includes('романтик') || lower.includes('для двоих')) {
+        resp = '💑 Романтические отели для двоих — атмосфера и приватность:';
+        hotels = [
+          { name: 'Astoria Hotel SPb', loc: 'Санкт-Петербург, Россия', price: '7 200 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1556103255-4443dbae8e5a?w=400&h=300&fit=crop&q=80' },
+          { name: 'Anantara Phuket', loc: 'Пхукет · Май Кхао', price: '8 300 ₽', rating: '9.6', img: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400&h=300&fit=crop&q=80' },
+        ];
+      } else if (lower.includes('семь') || lower.includes('дет')) {
+        resp = '👨‍👩‍👧 Семейные отели с анимацией и детскими программами:';
+        hotels = [
+          { name: 'Radisson Blu Paradise', loc: 'Сочи, Адлер', price: '8 900 ₽', rating: '9.2', img: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop&q=80' },
+          { name: 'Rosa Springs Resort', loc: 'Роза Хутор, Сочи', price: '9 400 ₽', rating: '9.0', img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop&q=80' },
+        ];
+      } else if (lower.includes('тропик') || lower.includes('бали') || lower.includes('мальдив')) {
+        resp = '🌴 Тропический рай — лучшие курорты:';
+        hotels = [
+          { name: 'Villa Seminyak Estate', loc: 'Бали · Семиньяк', price: '4 500 ₽', rating: '9.5', img: 'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=400&h=300&fit=crop&q=80' },
+          { name: 'Centara Grand Phuket', loc: 'Пхукет, Таиланд', price: '6 200 ₽', rating: '9.3', img: 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=400&h=300&fit=crop&q=80' },
+        ];
+      } else if (lower.includes('город') || lower.includes('urban') || lower.includes('столиц')) {
+        resp = '🏙️ Лучшие городские отели для путешествий:';
+        hotels = [
+          { name: 'Astoria Hotel SPb', loc: 'Санкт-Петербург', price: '7 200 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1556103255-4443dbae8e5a?w=400&h=300&fit=crop&q=80' },
+          { name: 'Pera Palace Hotel', loc: 'Стамбул · Бейоглу', price: '7 100 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&h=300&fit=crop&q=80' },
+        ];
+      } else if (lower.includes('лыж') || lower.includes('сноуборд') || lower.includes('горнолыж')) {
+        resp = '⛷️ Горнолыжные курорты — снег, трассы, апре-ски:';
+        hotels = [
+          { name: 'White Peak', loc: 'Архыз, Россия', price: '10 689 ₽', rating: '9.1', img: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop&q=80' },
+          { name: 'Rosa Springs Resort', loc: 'Роза Хутор, Сочи', price: '9 400 ₽', rating: '9.0', img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop&q=80' },
+        ];
+      } else if (lower.includes('гастро') || lower.includes('кулинар') || lower.includes('еда')) {
+        resp = '🍜 Гастро-направления — вкусная еда и кулинарные маршруты:';
+        hotels = [
+          { name: 'Pera Palace Hotel', loc: 'Стамбул · Бейоглу', price: '7 100 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&h=300&fit=crop&q=80' },
+          { name: 'Altai Village Glamping', loc: 'Горный Алтай', price: '6 300 ₽', rating: '9.3', img: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=400&h=300&fit=crop&q=80' },
+        ];
+      } else if (lower.includes('культур') || lower.includes('музей') || lower.includes('истор') || lower.includes('архитектур')) {
+        resp = '🎭 Культурный туризм — музеи, архитектура, история:';
+        hotels = [
+          { name: 'Astoria Hotel SPb', loc: 'Санкт-Петербург', price: '7 200 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1556103255-4443dbae8e5a?w=400&h=300&fit=crop&q=80' },
+          { name: 'Pera Palace Hotel', loc: 'Стамбул · Бейоглу', price: '7 100 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&h=300&fit=crop&q=80' },
+        ];
+      } else if (lower.includes('100') || lower.includes('выгод') || lower.includes('бюджет')) {
+        resp = '💰 Лучшие варианты до 100 000 ₽ с кэшбэком:';
+        hotels = [
+          { name: 'Скайпарк Апарт-отель', loc: 'Сочи · Эсто-Садок', price: '5 500 ₽', rating: '8.5', img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop&q=80' },
+          { name: 'Altai Village Glamping', loc: 'Горный Алтай', price: '6 300 ₽', rating: '9.3', img: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=400&h=300&fit=crop&q=80' },
+        ];
+      } else if (lower.includes('горн') || lower.includes('гор') || lower.includes('трекк')) {
+        resp = '🏔️ Горный отдых — трекинг, природа, свежий воздух:';
+        hotels = [
+          { name: 'Altai Village Glamping', loc: 'Горный Алтай', price: '6 300 ₽', rating: '9.3', img: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=400&h=300&fit=crop&q=80' },
+          { name: 'White Peak', loc: 'Архыз, Россия', price: '10 689 ₽', rating: '9.1', img: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop&q=80' },
+        ];
+      } else if (lower.includes('пхукет') || lower.includes('таиланд')) {
+        resp = 'Пхукет — лучший пляжный выбор! 🏖️ Вот топ отелей с кэшбэком:';
+        hotels = [
+          { name: 'Kata Rocks Resort', loc: 'Пхукет · Ката-Ной', price: '5 800 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=400&h=300&fit=crop&q=80' },
+          { name: 'Anantara Phuket', loc: 'Пхукет · Май Кхао', price: '8 300 ₽', rating: '9.6', img: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400&h=300&fit=crop&q=80' },
+        ];
+      } else if (lower.includes('дубай') || lower.includes('оаэ')) {
+        resp = 'Дубай — это впечатления на всю жизнь! ✨';
+        hotels = [
+          { name: 'Atlantis The Palm', loc: 'Дубай · Palm Jumeirah', price: '18 900 ₽', rating: '9.1', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&h=300&fit=crop&q=80' },
+          { name: 'Burj Al Arab', loc: 'Дубай · Jumeirah', price: '95 000 ₽', rating: '9.8', img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&q=80' },
+        ];
+      } else if (lower.includes('сочи') || lower.includes('архыз') || lower.includes('гор')) {
+        resp = 'Горы зовут! ⛷️ Вот лучшие варианты:';
+        hotels = [
+          { name: 'White Peak', loc: 'Архыз, Россия', price: '10 689 ₽', rating: '9.1', img: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop&q=80' },
+          { name: 'Rosa Springs', loc: 'Роза Хутор, Сочи', price: '9 400 ₽', rating: '9.0', img: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop&q=80' },
+        ];
+      } else if (lower.includes('бали')) {
+        resp = 'Бали — остров богов! 🌺 Нашёл лучшие виллы:';
+        hotels = [
+          { name: 'Villa Seminyak Estate', loc: 'Бали · Семиньяк', price: '4 500 ₽', rating: '9.5', img: 'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=400&h=300&fit=crop&q=80' },
+        ];
+      } else if (lower.includes('стамбул') || lower.includes('турц')) {
+        resp = 'Стамбул ждёт! 🕌 Отели в историческом центре:';
+        hotels = [
+          { name: 'Pera Palace Hotel', loc: 'Стамбул · Бейоглу', price: '7 100 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&h=300&fit=crop&q=80' },
+        ];
+      } else if (lower.match(/\d+\s*(k|к|тыс|000)/)) {
+        resp = 'Подбираю в вашем бюджете лучшие варианты с кэшбэком 💳:';
+        hotels = [
+          { name: 'Скайпарк Апарт-отель', loc: 'Сочи · Эсто-Садок', price: '5 500 ₽', rating: '8.5', img: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=400&h=300&fit=crop&q=80' },
+          { name: 'Bandara Resort Phuket', loc: 'Пхукет, Таиланд', price: '3 200 ₽', rating: '8.7', img: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=400&h=300&fit=crop&q=80' },
+        ];
+      } else {
+        resp = 'Понял вас! 🧭 Укажите детали, и я подберу идеальный вариант:';
+      }
+
+      addMessage('bot', resp);
+      if (hotels.length > 0) {
+        setTimeout(() => {
+          hotels.forEach(h => addHotelCard(h));
+          setTimeout(() => {
+            if (fromTag) {
+              // Тег — только показываем варианты транспорта, без виджета бронирования
+              addTransportCards(text);
+            } else {
+              addMessage('bot', '💳 При оплате картой Т-Банка — кэшбэк до 10%! Выберите даты для бронирования:');
+              addBookingWidget(hotels[0].name);
+            }
+          }, 150);
+        }, 300);
+      } else {
+        if (!fromTag) {
+          // Нет совпадений — показываем виджет с поисковым запросом
+          setTimeout(() => addBookingWidget(text), 150);
+        }
+      }
+    }
+
+    // ── VIDEO URL DETECTION & ANALYSIS ────────────────────────────────────
+
+    /**
+     * Detect if text is a recognized short-video URL.
+     * Returns { platform, platformClass, id, url } or null.
+     */
+    function detectVideoUrl(text) {
+      const t = text.trim();
+      const checks = [
+        {
+          re: /(?:youtube\.com\/(?:shorts\/|watch\?v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+          platform: 'YouTube Shorts',
+          cls: 'yt'
+        },
+        {
+          re: /(?:vm\.)?tiktok\.com\/@[\w.]+\/video\/(\d+)|tiktok\.com\/t\/([a-zA-Z0-9]+)/,
+          platform: 'TikTok',
+          cls: 'tt'
+        },
+        {
+          re: /instagram\.com\/(?:reel|p|tv)\/([a-zA-Z0-9_-]+)/,
+          platform: 'Instagram Reels',
+          cls: 'ig'
+        },
+        {
+          re: /vk\.com\/(?:video|clip)-?\d+_\d+/,
+          platform: 'ВКонтакте',
+          cls: 'vk'
+        },
+      ];
+      for (const { re, platform, cls } of checks) {
+        const m = t.match(re);
+        if (m) return { platform, cls, id: m[1] || m[2] || null, url: t };
+      }
+      return null;
+    }
+
+    function getYoutubeThumbnail(id) {
+      return `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+    }
+
+    /** Called when user clicks the 🎬 button */
+    function promptVideoUrl() {
+      openCopilot();
+      // Small delay so sidebar opens first
+      setTimeout(() => {
+        const input = document.getElementById('copilotInput');
+        const url = window.prompt('📎 Вставьте ссылку на видео из TikTok, Instagram Reels или YouTube Shorts:', '');
+        if (!url || !url.trim()) return;
+        input.value = url.trim();
+        sendMessage();
+      }, 300);
+    }
+
+    /** Render a video preview bubble in chat */
+    function addVideoMessage(videoInfo) {
+      const msgs = document.getElementById('copilotMessages');
+      const div = document.createElement('div');
+      div.className = 'msg user fade-in';
+
+      // YouTube: use real thumbnail; others: random placeholder
+      const thumbSrc = (videoInfo.cls === 'yt' && videoInfo.id)
+        ? getYoutubeThumbnail(videoInfo.id)
+        : `https://images.unsplash.com/photo-1566073771259-6a8506099945?w=480&h=270&fit=crop&q=80`;
+
+      div.innerHTML = `
+        <div class="msg-avatar" style="background:var(--blue-light);">👤</div>
+        <div>
+          <div class="msg-bubble" style="padding:6px;background:var(--blue);max-width:250px;">
+            <div class="msg-video-preview">
+              <img src="${thumbSrc}"
+                   onerror="this.src='https://images.unsplash.com/photo-1566073771259-6a8506099945?w=480&h=270&fit=crop&q=80'"
+                   alt="${videoInfo.platform}" />
+              <div class="msg-video-platform ${videoInfo.cls}">${videoInfo.platform}</div>
+              <div class="msg-video-play">
+                <svg width="44" height="44" viewBox="0 0 24 24" fill="rgba(255,255,255,0.92)">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+              </div>
+            </div>
+            <div class="msg-video-label">
+              <span>🔍</span><span>Анализирую видео...</span>
+            </div>
+          </div>
+          <div class="msg-time">${getTime()}</div>
+        </div>
+      `;
+      msgs.appendChild(div);
+      scrollMessages();
+    }
+
+    /** Main handler after video URL is detected */
+    function handleVideoUrl(videoInfo) {
+      addVideoMessage(videoInfo);
+      showUploadProgress();
+      showTyping();
+      const delay = 2800 + Math.random() * 800;
+      setTimeout(() => {
+        removeTyping();
+        analyzeVideoResponse(videoInfo);
+      }, delay);
+    }
+
+    /** Simulated AI analysis result */
+    function analyzeVideoResponse(videoInfo) {
+      const scenarios = [
+        {
+          location: 'Бали, Индонезия',
+          flag: '🇮🇩',
+          confidence: 92,
+          scene: 'вилла с инфинити-бассейном на фоне рисовых террас',
+          emoji: '🌺',
+          hotels: [
+            { name: 'Alaya Resort Ubud', loc: 'Бали · Убуд', price: '5 100 ₽', rating: '9.5', img: 'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=400&h=300&fit=crop&q=80' },
+            { name: 'Villa Seminyak Estate', loc: 'Бали · Семиньяк', price: '4 500 ₽', rating: '9.3', img: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop&q=80' },
+            { name: 'Ubud Hanging Gardens', loc: 'Бали · Убуд', price: '6 200 ₽', rating: '9.2', img: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?w=400&h=300&fit=crop&q=80' },
+          ]
+        },
+        {
+          location: 'Дубай, ОАЭ',
+          flag: '🇦🇪',
+          confidence: 88,
+          scene: 'бассейн-инфинити с видом на небоскрёбы и Персидский залив',
+          emoji: '✨',
+          hotels: [
+            { name: 'Atlantis The Palm', loc: 'Дубай · Palm Jumeirah', price: '18 900 ₽', rating: '9.1', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&h=300&fit=crop&q=80' },
+            { name: 'Address Beach Resort', loc: 'Дубай · JBR', price: '14 500 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&q=80' },
+          ]
+        },
+        {
+          location: 'Пхукет, Таиланд',
+          flag: '🇹🇭',
+          confidence: 85,
+          scene: 'белоснежный пляж с прозрачной бирюзовой водой и лонгтейлами',
+          emoji: '🏖️',
+          hotels: [
+            { name: 'Kata Rocks Resort', loc: 'Пхукет · Ката-Ной', price: '5 800 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=400&h=300&fit=crop&q=80' },
+            { name: 'Anantara Phuket', loc: 'Пхукет · Май Кхао', price: '8 300 ₽', rating: '9.6', img: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400&h=300&fit=crop&q=80' },
+          ]
+        },
+        {
+          location: 'Санторини, Греция',
+          flag: '🇬🇷',
+          confidence: 79,
+          scene: 'белые домики с синими куполами на краю скалистой кальдеры',
+          emoji: '🏛️',
+          hotels: [
+            { name: 'Canaves Oia Suites', loc: 'Санторини · Ия', price: '22 000 ₽', rating: '9.7', img: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=400&h=300&fit=crop&q=80' },
+            { name: 'Grace Santorini', loc: 'Санторини · Имеровигли', price: '18 500 ₽', rating: '9.5', img: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=400&h=300&fit=crop&q=80' },
+          ]
+        },
+        {
+          location: 'Роза Хутор, Сочи',
+          flag: '🇷🇺',
+          confidence: 94,
+          scene: 'горнолыжные трассы и уютные шале в заснеженных горах Кавказа',
+          emoji: '⛷️',
+          hotels: [
+            { name: 'Rosa Springs Resort', loc: 'Сочи · Роза Хутор', price: '9 400 ₽', rating: '9.0', img: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop&q=80' },
+            { name: 'White Peak Hotel', loc: 'Архыз, Россия', price: '10 689 ₽', rating: '9.1', img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop&q=80' },
+          ]
+        },
+        {
+          location: 'Стамбул, Турция',
+          flag: '🇹🇷',
+          confidence: 83,
+          scene: 'вид на Босфор и исторические мечети в закатном свете',
+          emoji: '🕌',
+          hotels: [
+            { name: 'Pera Palace Hotel', loc: 'Стамбул · Бейоглу', price: '7 100 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&h=300&fit=crop&q=80' },
+            { name: 'Sirkeci Mansion', loc: 'Стамбул · Сиркеджи', price: '4 300 ₽', rating: '8.9', img: 'https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?w=400&h=300&fit=crop&q=80' },
+          ]
+        },
+      ];
+
+      const s = scenarios[Math.floor(Math.random() * scenarios.length)];
+
+      // Build response message with confidence badge
+      const msgs = document.getElementById('copilotMessages');
+      const div = document.createElement('div');
+      div.className = 'msg bot fade-in';
+      div.innerHTML = `
+        <div class="msg-avatar">✨</div>
+        <div>
+          <div class="msg-bubble">
+            ${s.emoji} <b>Проанализировал видео с ${videoInfo.platform}!</b><br/><br/>
+            <span class="video-confidence">📍 ${s.flag} ${s.location} · ${s.confidence}% уверенность</span><br/>
+            <span style="font-size:13px;color:var(--text-sub);">🎬 В видео: ${s.scene}</span><br/><br/>
+            Подобрал похожие места и отели — смотри:
+          </div>
+          <div class="msg-time">${getTime()}</div>
+        </div>
+      `;
+      msgs.appendChild(div);
+      scrollMessages();
+
+      setTimeout(() => {
+        s.hotels.forEach(h => addHotelCard(h));
+        setTimeout(() => {
+          addMessage('bot', `🎯 Это то самое место? Выберите даты — найду лучшую цену с кэшбэком до 10% 💳`);
+          addBookingWidget(s.hotels[0].name);
+        }, 200);
+      }, 400);
+    }
+
+    // ── IMAGE UPLOAD ───────────────────────────────────────────────────────
+    function handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        // Show image in chat
+        addImageMessage(e.target.result);
+        // Show progress
+        showUploadProgress();
+        // Simulate analysis
+        showTyping();
+        setTimeout(() => {
+          removeTyping();
+          analyzeImageResponse();
+        }, 2500);
+      };
+      reader.readAsDataURL(file);
+      event.target.value = '';
+    }
+
+    function showUploadProgress() {
+      const bar = document.getElementById('uploadProgressBar');
+      const wrap = document.getElementById('uploadProgress');
+      wrap.style.display = 'block';
+      bar.style.width = '0%';
+      setTimeout(() => bar.style.width = '60%', 100);
+      setTimeout(() => bar.style.width = '90%', 800);
+      setTimeout(() => { bar.style.width = '100%'; setTimeout(() => wrap.style.display = 'none', 400); }, 1800);
+    }
+
+    function addImageMessage(src) {
+      const msgs = document.getElementById('copilotMessages');
+      const div = document.createElement('div');
+      div.className = 'msg user fade-in';
+      div.innerHTML = `
+      <div class="msg-avatar" style="background:var(--blue-light);">👤</div>
+      <div>
+        <div class="msg-bubble" style="padding:6px;background:var(--blue);max-width:220px;">
+          <div class="msg-img-preview"><img src="${src}" style="width:100%;border-radius:6px;" /></div>
+          <div style="font-size:12px;opacity:.8;padding:2px 4px;">Анализирую фото... 🔍</div>
+        </div>
+        <div class="msg-time">${getTime()}</div>
+      </div>
+    `;
+      msgs.appendChild(div);
+      scrollMessages();
+    }
+
+    function analyzeImageResponse() {
+      const responses = [
+        {
+          text: 'Вижу тропический пляж с пальмами 🏝️ Это похоже на Юго-Восточную Азию — вероятно, Таиланд или Бали!\n\nПодобрал похожие отели:',
+          hotels: [
+            { name: 'Kata Rocks Resort', loc: 'Пхукет, Таиланд', price: '5 800 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1537956965359-7573183d1f57?w=400&h=300&fit=crop&q=80' },
+            { name: 'Ubud Hanging Gardens', loc: 'Бали, Индонезия', price: '6 200 ₽', rating: '9.2', img: 'https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=400&h=300&fit=crop&q=80' },
+          ]
+        },
+        {
+          text: 'Вижу заснеженные горные вершины ⛰️ Определил стиль: горнолыжный курорт. Вот похожие места:',
+          hotels: [
+            { name: 'White Peak Hotel', loc: 'Архыз, Россия', price: '10 689 ₽', rating: '9.1', img: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&h=300&fit=crop&q=80' },
+            { name: 'Rosa Springs Resort', loc: 'Роза Хутор', price: '9 400 ₽', rating: '9.0', img: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=300&fit=crop&q=80' },
+          ]
+        },
+        {
+          text: 'Отличное фото! 📸 Похоже на городской пейзаж с историческими мечетями — Стамбул или ОАЭ!\n\nВот подходящие отели:',
+          hotels: [
+            { name: 'Pera Palace Hotel', loc: 'Стамбул, Турция', price: '7 100 ₽', rating: '9.4', img: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&h=300&fit=crop&q=80' },
+            { name: 'Atlantis The Palm', loc: 'Дубай, ОАЭ', price: '18 900 ₽', rating: '9.1', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&h=300&fit=crop&q=80' },
+          ]
+        }
+      ];
+
+      const r = responses[Math.floor(Math.random() * responses.length)];
+      addMessage('bot', r.text);
+      setTimeout(() => {
+        r.hotels.forEach(h => addHotelCard(h));
+        setTimeout(() => {
+          addMessage('bot', '🎯 Выберите даты — подберу самый выгодный вариант с кэшбэком!');
+          addBookingWidget(r.hotels[0].name);
+        }, 150);
+      }, 300);
+    }
+
+    // ── HELPERS ────────────────────────────────────────────────────────────
+    function addMessage(role, text) {
+      const msgs = document.getElementById('copilotMessages');
+      const isBot = role === 'bot';
+      const div = document.createElement('div');
+      div.className = `msg ${role} fade-in`;
+      div.innerHTML = `
+      <div class="msg-avatar">${isBot ? '✨' : '👤'}</div>
+      <div>
+        <div class="msg-bubble">${text.replace(/\n/g, '<br/>')}</div>
+        <div class="msg-time">${getTime()}</div>
+      </div>
+    `;
+      msgs.appendChild(div);
+      scrollMessages();
+    }
+
+    function addHotelCard(hotel) {
+      const msgs = document.getElementById('copilotMessages');
+      const div = document.createElement('div');
+      div.className = 'msg bot fade-in';
+      div.innerHTML = `
+      <div class="msg-avatar">✨</div>
+      <div style="flex:1;min-width:0;">
+        <div class="chat-hotel-card">
+          <img src="${hotel.img}" alt="${hotel.name}" />
+          <div class="chat-hotel-card-body">
+            <div class="chc-name">${hotel.name}</div>
+            <div style="font-size:12px;color:var(--text-sub);margin-bottom:6px;">${hotel.loc}</div>
+            <div class="chc-row">
+              <div class="chc-price">От ${hotel.price}/ночь</div>
+              <div class="chc-rating">${hotel.rating}</div>
+            </div>
+            <button class="chc-book" onclick="bookHotel('${hotel.name}')">Забронировать → Кэшбэк 10%</button>
+          </div>
+        </div>
+      </div>
+    `;
+      msgs.appendChild(div);
+      scrollMessages();
+    }
+
+    function addTransportCards(tagQuery) {
+      const lower = tagQuery.toLowerCase();
+      const msgs = document.getElementById('copilotMessages');
+
+      // Define transport options per tag type
+      let options = [];
+
+      // URL helpers
+      const flightUrl = (from, to) =>
+        `https://www.tbank.ru/travel/flights/${encodeURIComponent(from)}--${encodeURIComponent(to)}/`;
+      const trainUrl = (from, to) =>
+        `https://www.tbank.ru/travel/trains/${encodeURIComponent(from)}--${encodeURIComponent(to)}/`;
+
+      if (lower.includes('пляж') || lower.includes('египет') || lower.includes('шарм')) {
+        options = [
+          { type: 'flight', icon: '✈️', route: 'Москва → Шарм-эль-Шейх', meta: '4 ч 30 мин · Прямой', price: 'от 12 400 ₽', url: flightUrl('Москва', 'Шарм-эль-Шейх') },
+          { type: 'flight', icon: '✈️', route: 'Москва → Пхукет', meta: '9 ч 20 мин · 1 пересадка', price: 'от 19 800 ₽', url: flightUrl('Москва', 'Пхукет') },
+        ];
+      } else if (lower.includes('романтик') || lower.includes('двоих')) {
+        options = [
+          { type: 'flight', icon: '✈️', route: 'Москва → Санкт-Петербург', meta: '1 ч 25 мин · Прямой', price: 'от 2 900 ₽', url: flightUrl('Москва', 'Санкт-Петербург') },
+          { type: 'train', icon: '🚂', route: 'Москва → Санкт-Петербург', meta: '3 ч 30 мин · Сапсан', price: 'от 2 100 ₽', url: trainUrl('Москва', 'Санкт-Петербург') },
+        ];
+      } else if (lower.includes('семь') || lower.includes('дет')) {
+        options = [
+          { type: 'flight', icon: '✈️', route: 'Москва → Сочи', meta: '2 ч 30 мин · Прямой', price: 'от 4 200 ₽', url: flightUrl('Москва', 'Сочи') },
+          { type: 'train', icon: '🚂', route: 'Москва → Адлер', meta: '23 ч 40 мин · Ласточка', price: 'от 3 100 ₽', url: trainUrl('Москва', 'Адлер') },
+        ];
+      } else if (lower.includes('тропик') || lower.includes('бали') || lower.includes('мальдив')) {
+        options = [
+          { type: 'flight', icon: '✈️', route: 'Москва → Денпасар (Бали)', meta: '13 ч · 1 пересадка', price: 'от 28 500 ₽', url: flightUrl('Москва', 'Денпасар') },
+          { type: 'flight', icon: '✈️', route: 'Москва → Мале (Мальдивы)', meta: '10 ч · 1 пересадка', price: 'от 32 000 ₽', url: flightUrl('Москва', 'Мале') },
+        ];
+      } else if (lower.includes('лыж') || lower.includes('сноуборд') || lower.includes('горнолыж')) {
+        options = [
+          { type: 'flight', icon: '✈️', route: 'Москва → Краснодар (Сочи)', meta: '2 ч 15 мин · Прямой', price: 'от 4 000 ₽', url: flightUrl('Москва', 'Краснодар') },
+          { type: 'train', icon: '🚂', route: 'Москва → Адлер', meta: '23 ч 40 мин · Фирменный', price: 'от 3 100 ₽', url: trainUrl('Москва', 'Адлер') },
+        ];
+      } else if (lower.includes('гастро') || lower.includes('кулинар')) {
+        options = [
+          { type: 'flight', icon: '✈️', route: 'Москва → Стамбул', meta: '3 ч 20 мин · Прямой', price: 'от 9 200 ₽', url: flightUrl('Москва', 'Стамбул') },
+          { type: 'flight', icon: '✈️', route: 'Москва → Тбилиси', meta: '3 ч 05 мин · Прямой', price: 'от 7 400 ₽', url: flightUrl('Москва', 'Тбилиси') },
+        ];
+      } else if (lower.includes('культур') || lower.includes('музей') || lower.includes('истор')) {
+        options = [
+          { type: 'flight', icon: '✈️', route: 'Москва → Санкт-Петербург', meta: '1 ч 25 мин · Прямой', price: 'от 2 900 ₽', url: flightUrl('Москва', 'Санкт-Петербург') },
+          { type: 'train', icon: '🚂', route: 'Москва → Санкт-Петербург', meta: '3 ч 30 мин · Сапсан', price: 'от 2 100 ₽', url: trainUrl('Москва', 'Санкт-Петербург') },
+        ];
+      } else if (lower.includes('100') || lower.includes('бюджет') || lower.includes('выгод')) {
+        options = [
+          { type: 'flight', icon: '✈️', route: 'Москва → Сочи', meta: '2 ч 30 мин · Прямой', price: 'от 4 200 ₽', url: flightUrl('Москва', 'Сочи') },
+          { type: 'train', icon: '🚂', route: 'Москва → Адлер', meta: '23 ч 40 мин · Фирменный', price: 'от 3 100 ₽', url: trainUrl('Москва', 'Адлер') },
+        ];
+      } else if (lower.includes('горн') || lower.includes('трекк') || lower.includes('гор')) {
+        options = [
+          { type: 'flight', icon: '✈️', route: 'Москва → Минеральные Воды', meta: '2 ч 05 мин · Прямой', price: 'от 3 800 ₽', url: flightUrl('Москва', 'Минеральные Воды') },
+          { type: 'train', icon: '🚂', route: 'Москва → Кисловодск', meta: '24 ч · Фирменный', price: 'от 3 300 ₽', url: trainUrl('Москва', 'Кисловодск') },
+        ];
+      } else {
+        options = [
+          { type: 'flight', icon: '✈️', route: 'Москва → Сочи', meta: '2 ч 30 мин · Прямой', price: 'от 4 200 ₽', url: flightUrl('Москва', 'Сочи') },
+          { type: 'train', icon: '🚂', route: 'Москва → Адлер', meta: '23 ч 40 мин · Фирменный', price: 'от 3 100 ₽', url: trainUrl('Москва', 'Адлер') },
+        ];
+      }
+
+      const wrapper = document.createElement('div');
+      wrapper.className = 'msg bot fade-in';
+      wrapper.innerHTML = `
+        <div class="msg-avatar">✨</div>
+        <div style="flex:1;min-width:0;">
+          <div class="msg-bubble">🚀 Варианты перелётов и билетов:</div>
+          <div class="msg-time">${getTime()}</div>
+        </div>
+      `;
+      msgs.appendChild(wrapper);
+
+      options.forEach(opt => {
+        const card = document.createElement('div');
+        card.className = 'msg bot fade-in';
+        card.innerHTML = `
+          <div class="msg-avatar" style="visibility:hidden;">✨</div>
+          <div style="flex:1;min-width:0;">
+            <div class="chat-transport-card">
+              <div class="ctc-icon">${opt.icon}</div>
+              <div class="ctc-info">
+                <div class="ctc-route">${opt.route}</div>
+                <div class="ctc-meta">${opt.meta}</div>
+              </div>
+              <div class="ctc-right">
+                <div class="ctc-price">${opt.price}</div>
+                <button class="ctc-buy" onclick="buyTicket('${opt.route}', '${opt.type}', '${opt.url}')">Купить →</button>
+              </div>
+            </div>
+          </div>
+        `;
+        msgs.appendChild(card);
+      });
+
+      scrollMessages();
+    }
+
+    function buyTicket(route, type, url) {
+      addMessage('user', `Хочу купить ${type === 'flight' ? 'авиабилет' : 'ж/д билет'}: ${route}`);
+      // Сразу открываем реальный сайт Т-Путешествий в новой вкладке
+      const dest = url || (type === 'train'
+        ? 'https://www.tbank.ru/travel/trains/'
+        : 'https://www.tbank.ru/travel/flights/');
+      window.open(dest, '_blank', 'noopener,noreferrer');
+      showTyping();
+      setTimeout(() => {
+        removeTyping();
+        addMessage('bot', `Открываю поиск билетов по маршруту ${route} 🎫\n\nОплатите картой Т-Банка — кэшбэк до 10%!`);
+      }, 900);
+    }
+
+    function bookHotel(name) {
+      addMessage('user', `Хочу забронировать ${name}`);
+      showTyping();
+      setTimeout(() => {
+        removeTyping();
+        addMessage('bot', `Отличный выбор! 🎉 Укажите даты и количество гостей — и я перенаправлю вас на страницу бронирования:`);
+        setTimeout(() => addBookingWidget(name), 150);
+      }, 1000);
+    }
+
+    // уникальный ID виджета на случай нескольких вызовов
+    let _bwId = 0;
+
+    function addBookingWidget(hotelName) {
+      const msgs = document.getElementById('copilotMessages');
+      const dates = getNextWeekendDates();
+      const id = ++_bwId;
+
+      const div = document.createElement('div');
+      div.className = 'msg bot fade-in';
+      div.innerHTML = `
+        <div class="msg-avatar">✨</div>
+        <div style="flex:1;min-width:0;">
+          <div class="booking-widget">
+            <div class="bw-header">🏨 ${hotelName}</div>
+            <div class="bw-body">
+              <div class="bw-row">
+                <div class="bw-field">
+                  <div class="bw-label">📅 Заезд</div>
+                  <input type="date" class="bw-input" id="bw-checkin-${id}" value="${dates.from}" />
+                </div>
+                <div class="bw-field">
+                  <div class="bw-label">📅 Выезд</div>
+                  <input type="date" class="bw-input" id="bw-checkout-${id}" value="${dates.to}" />
+                </div>
+              </div>
+              <div class="bw-field">
+                <div class="bw-label">👥 Гости</div>
+                <div class="bw-guests-row">
+                  <button class="bw-guests-btn" onclick="bwChangeGuests(${id}, -1)">−</button>
+                  <div class="bw-guests-num" id="bw-guests-${id}">2</div>
+                  <button class="bw-guests-btn" onclick="bwChangeGuests(${id}, 1)">+</button>
+                </div>
+              </div>
+              <button class="bw-book-btn" onclick="bwGoToBooking('${hotelName}', ${id})">
+                Перейти к бронированию →
+              </button>
+            </div>
+          </div>
+          <div class="msg-time">${getTime()}</div>
+        </div>
+      `;
+      msgs.appendChild(div);
+      scrollMessages();
+    }
+
+    function bwChangeGuests(id, delta) {
+      const el = document.getElementById(`bw-guests-${id}`);
+      if (!el) return;
+      const val = Math.max(1, Math.min(10, parseInt(el.textContent) + delta));
+      el.textContent = val;
+    }
+
+    function bwGoToBooking(hotelName, id) {
+      const checkin = document.getElementById(`bw-checkin-${id}`)?.value || '';
+      const checkout = document.getElementById(`bw-checkout-${id}`)?.value || '';
+      const guests = document.getElementById(`bw-guests-${id}`)?.textContent || '2';
+
+      addMessage('user', `Бронирую «${hotelName}»: заезд ${checkin}, выезд ${checkout}, гостей: ${guests}`);
+
+      const params = new URLSearchParams({
+        guests,
+        dateFrom: checkin,
+        dateTo: checkout,
+        locationCode: 'city',
+        searchSource: 'Search'
+      });
+      window.open(
+        `https://www.tbank.ru/travel/hotels/new/search/?destination=${encodeURIComponent(hotelName)}&${params.toString()}`,
+        '_blank'
+      );
+    }
+
+    function showTyping() {
+      const msgs = document.getElementById('copilotMessages');
+      const div = document.createElement('div');
+      div.className = 'msg bot';
+      div.id = 'typingIndicator';
+      div.innerHTML = `
+      <div class="msg-avatar">✨</div>
+      <div class="msg-bubble" style="padding:10px 14px;">
+        <div class="typing-indicator">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      </div>
+    `;
+      msgs.appendChild(div);
+      scrollMessages();
+    }
+
+    function removeTyping() {
+      const ti = document.getElementById('typingIndicator');
+      if (ti) ti.remove();
+    }
+
+    function scrollMessages() {
+      const msgs = document.getElementById('copilotMessages');
+      msgs.scrollTop = msgs.scrollHeight;
+    }
+
+    function getTime() {
+      return new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // ── KEYBOARD SHORTCUT ──────────────────────────────────────────────────
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        if (document.getElementById('authOverlay').classList.contains('open')) {
+          closeAuthModal();
+        } else if (copilotOpen) {
+          toggleCopilot();
+        }
+      }
+    });
+
+    // ══════════════════════════════════════════════════════════════════════
+    //  SUPABASE AUTH
+    // ══════════════════════════════════════════════════════════════════════
+
+    // Инициализация клиента (window.supabase из CDN)
+    let _supabase = null;
+
+    function getSupabase() {
+      if (_supabase) return _supabase;
+      const url = window.SUPABASE_URL;
+      const key = window.SUPABASE_KEY;
+      if (!url || !key) {
+        console.warn('[Auth] Supabase не настроен — укажите SUPABASE_URL и SUPABASE_KEY');
+        return null;
+      }
+      _supabase = window.supabase.createClient(url, key);
+      return _supabase;
+    }
+
+    // ── AUTH MODAL HELPERS ────────────────────────────────────────────────
+    function openAuthModal(tab) {
+      document.getElementById('authOverlay').classList.add('open');
+      switchAuthTab(tab || 'login');
+      // Сброс ошибок
+      setErr('loginErr', '');
+      setErr('regErr', '');
+    }
+
+    function closeAuthModal() {
+      document.getElementById('authOverlay').classList.remove('open');
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target === document.getElementById('authOverlay')) closeAuthModal();
+    }
+
+    function switchAuthTab(tab) {
+      const isLogin = tab === 'login';
+      document.getElementById('tabLogin').classList.toggle('active', isLogin);
+      document.getElementById('tabRegister').classList.toggle('active', !isLogin);
+      document.getElementById('formLogin').style.display = isLogin ? 'block' : 'none';
+      document.getElementById('formRegister').style.display = (!isLogin && tab === 'register') ? 'block' : 'none';
+      document.getElementById('authSuccess').classList.remove('show');
+    }
+
+    function setErr(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.classList.toggle('show', !!msg);
+    }
+
+    function setBtnLoading(id, loading, text) {
+      const btn = document.getElementById(id);
+      btn.disabled = loading;
+      btn.textContent = loading ? 'Подождите...' : text;
+    }
+
+    // ── REGISTER ──────────────────────────────────────────────────────────
+    async function handleRegister(e) {
+      e.preventDefault();
+      setErr('regErr', '');
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const password2 = document.getElementById('regPassword2').value;
+
+      if (password !== password2) {
+        setErr('regErr', 'Пароли не совпадают');
+        return;
+      }
+
+      const sb = getSupabase();
+      if (!sb) {
+        setErr('regErr', 'Supabase не настроен. Укажите ключи в конфиге.');
+        return;
+      }
+
+      setBtnLoading('regBtn', true, 'Создать аккаунт');
+
+      // file:// не работает как redirectTo в Supabase — используем Supabase дефолт
+      const isFileProtocol = window.location.protocol === 'file:';
+      const redirectTo = isFileProtocol
+        ? 'https://nzvqxgpnuadytkmxhocq.supabase.co'   // Supabase вернёт на Site URL из дашборда
+        : window.location.href.split('#')[0];
+
+      const { error } = await sb.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: redirectTo }
+      });
+      setBtnLoading('regBtn', false, 'Создать аккаунт');
+
+      if (error) {
+        const msgs = {
+          'User already registered': 'Этот email уже зарегистрирован. Попробуйте войти.',
+          'Password should be at least 6 characters': 'Пароль должен быть минимум 6 символов.',
+        };
+        setErr('regErr', msgs[error.message] || error.message);
+        return;
+      }
+
+      // Показываем экран "Подтвердите email"
+      document.getElementById('formRegister').style.display = 'none';
+      document.getElementById('authSuccess').classList.add('show');
+      document.getElementById('successEmail').textContent = email;
+    }
+
+    // ── LOGIN ─────────────────────────────────────────────────────────────
+    async function handleLogin(e) {
+      e.preventDefault();
+      setErr('loginErr', '');
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+
+      const sb = getSupabase();
+      if (!sb) {
+        setErr('loginErr', 'Supabase не настроен. Укажите ключи в конфиге.');
+        return;
+      }
+
+      setBtnLoading('loginBtn', true, 'Войти');
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      setBtnLoading('loginBtn', false, 'Войти');
+
+      if (error) {
+        const msgs = {
+          'Invalid login credentials': 'Неверный email или пароль.',
+          'Email not confirmed': 'Email ещё не подтверждён. Проверьте почту.',
+        };
+        setErr('loginErr', msgs[error.message] || error.message);
+        return;
+      }
+
+      closeAuthModal();
+      renderUserPanel(data.user);
+    }
+
+    // ── SIGN OUT ──────────────────────────────────────────────────────────
+    async function signOut() {
+      const sb = getSupabase();
+      if (sb) await sb.auth.signOut();
+      renderGuestPanel();
+    }
+
+    // ── RENDER STATE ──────────────────────────────────────────────────────
+    function renderUserPanel(user) {
+      const email = user.email || '';
+      const meta = user.user_metadata || {};
+      const name = meta.full_name || meta.name || email.split('@')[0];
+      const initials = name[0].toUpperCase();
+
+      document.getElementById('btnOpenAuth').style.display = 'none';
+      const panel = document.getElementById('userPanel');
+      panel.style.display = 'flex';
+      document.getElementById('userEmail').textContent = name || email;
+      document.getElementById('userAvatar').textContent = initials;
+
+      // Заполнить профиль
+      populateProfile(user);
+    }
+
+    function renderGuestPanel() {
+      document.getElementById('btnOpenAuth').style.display = '';
+      document.getElementById('userPanel').style.display = 'none';
+    }
+
+    function showVerifiedBanner() {
+      const banner = document.getElementById('verifiedBanner');
+      banner.classList.add('show');
+      setTimeout(() => banner.classList.remove('show'), 5000);
+    }
+
+    // ══════════════════════════════════════════════════════════════════════
+    //  ЛИЧНЫЙ КАБИНЕТ — PROFILE
+    // ══════════════════════════════════════════════════════════════════════
+
+    // ── Заполнить данные профиля на экране ───────────────────────────────
+    function populateProfile(user) {
+      const email = user.email || '';
+      const meta = user.user_metadata || {};
+      const name = meta.full_name || meta.name || email.split('@')[0];
+      const initials = name[0].toUpperCase();
+
+      // hero
+      document.getElementById('profileAvatarBig').textContent = initials;
+      document.getElementById('profileNameDisplay').textContent = name;
+      document.getElementById('profileEmailDisplay').textContent = email;
+      document.getElementById('settingsNameSub').textContent = name;
+
+      // Если есть сохранённые stats — загружаем их
+      loadProfileStats(user.id);
+    }
+
+    // ── Редактирование имени ─────────────────────────────────────────────
+    function startEditName() {
+      const display = document.getElementById('profileNameDisplay');
+      const input = document.getElementById('profileNameInput');
+      input.value = display.textContent;
+      display.style.display = 'none';
+      input.style.display = 'block';
+      input.focus();
+      input.select();
+    }
+
+    async function saveProfileName() {
+      const input = document.getElementById('profileNameInput');
+      const display = document.getElementById('profileNameDisplay');
+      const name = input.value.trim() || 'Путешественник';
+
+      display.textContent = name;
+      input.style.display = 'none';
+      display.style.display = '';
+      document.getElementById('profileAvatarBig').textContent = name[0].toUpperCase();
+      document.getElementById('userAvatar').textContent = name[0].toUpperCase();
+      document.getElementById('settingsNameSub').textContent = name;
+
+      const sb = getSupabase();
+      if (!sb) return;
+      const { data: { user } } = await sb.auth.getUser();
+      if (!user) return;
+      // Обновляем user_metadata
+      await sb.auth.updateUser({ data: { full_name: name } });
+      // Обновляем таблицу profiles
+      await sb.from('profiles').update({ full_name: name }).eq('id', user.id);
+    }
+
+    // ── Avatar upload ────────────────────────────────────────────────────
+    async function uploadAvatar(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const sb = getSupabase();
+      if (!sb) {
+        // локальный предпросмотр без Supabase
+        const url = URL.createObjectURL(file);
+        setAvatarImage(url);
+        return;
+      }
+      const { data: { user } } = await sb.auth.getUser();
+      if (!user) return;
+
+      const ext = file.name.split('.').pop();
+      const path = `${user.id}/avatar.${ext}`;
+      const { error } = await sb.storage.from('avatars').upload(path, file, { upsert: true });
+      if (error) { console.error(error); return; }
+
+      const { data } = sb.storage.from('avatars').getPublicUrl(path);
+      if (data?.publicUrl) {
+        setAvatarImage(data.publicUrl);
+        await sb.auth.updateUser({ data: { avatar_url: data.publicUrl } });
+        await sb.from('profiles').update({ avatar_url: data.publicUrl }).eq('id', user.id);
+      }
+    }
+
+    function setAvatarImage(url) {
+      const av = document.getElementById('profileAvatarBig');
+      av.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" />`;
+    }
+
+    // ── Load profile stats ───────────────────────────────────────────────
+    async function loadProfileStats(userId) {
+      const sb = getSupabase();
+      if (!sb) return; // оставим demo-данные
+
+      // Загружаем статистику из wishlists + сессий (demo логика)
+      // В реальном проекте здесь запрос к trip orders API
+      const { data: wishlists } = await sb.from('wishlists').select('id').eq('user_id', userId);
+      // Статистика из sessions
+      const { data: sessions } = await sb.from('copilot_sessions').select('id').eq('user_id', userId);
+      // Просто показываем количество (demo)
+      if (wishlists) document.getElementById('statCities').textContent = wishlists.length || 5;
+    }
+
+    // ══════════════════════════════════════════════════════════════════════
+    //  VIDEO UPLOAD
+    // ══════════════════════════════════════════════════════════════════════
+
+    let pendingVideoFile = null;
+    let pendingVideoURL = null;
+
+    // Drag & Drop
+    function handleDragOver(e) {
+      e.preventDefault();
+      document.getElementById('uploadZone').classList.add('drag-over');
+    }
+    function handleDragLeave(e) {
+      document.getElementById('uploadZone').classList.remove('drag-over');
+    }
+    function handleDrop(e) {
+      e.preventDefault();
+      document.getElementById('uploadZone').classList.remove('drag-over');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('video/')) prepareVideoUpload(file);
+    }
+    function onVideoSelected(input) {
+      if (input.files[0]) prepareVideoUpload(input.files[0]);
+    }
+
+    function prepareVideoUpload(file) {
+      pendingVideoFile = file;
+      pendingVideoURL = URL.createObjectURL(file);
+      openUploadModal();
+    }
+
+    // ── Upload Modal ─────────────────────────────────────────────────────
+    function openUploadModal() {
+      document.getElementById('uploadModalOverlay').classList.add('open');
+      // Обновить превью
+      const preview = document.getElementById('umPreview');
+      if (pendingVideoURL) {
+        preview.innerHTML = `<video src="${pendingVideoURL}" muted autoplay loop style="width:100%;height:100%;object-fit:cover;"></video>`;
+      }
+    }
+    function closeUploadModal() {
+      document.getElementById('uploadModalOverlay').classList.remove('open');
+    }
+    function handleUploadOverlayClick(e) {
+      if (e.target === document.getElementById('uploadModalOverlay')) closeUploadModal();
+    }
+
+    // ── Publish moment ───────────────────────────────────────────────────
+    async function publishMoment() {
+      const location = document.getElementById('umLocation').value.trim();
+      const caption = document.getElementById('umCaption').value.trim();
+      const tags = document.getElementById('umTags').value.trim();
+
+      if (!location) {
+        document.getElementById('umLocation').focus();
+        document.getElementById('umLocation').style.borderColor = '#ef4444';
+        setTimeout(() => document.getElementById('umLocation').style.borderColor = '', 2000);
+        return;
+      }
+
+      const btn = document.getElementById('umPublishBtn');
+      btn.disabled = true;
+      btn.textContent = 'Публикую...';
+
+      const sb = getSupabase();
+
+      if (sb && pendingVideoFile) {
+        // Загружаем в Supabase Storage
+        const { data: { user } } = await sb.auth.getUser();
+        if (user) {
+          const filename = `${user.id}/${Date.now()}_${pendingVideoFile.name}`;
+
+          // Показываем прогресс
+          const progressWrap = document.getElementById('uploadProgressWrap');
+          progressWrap.classList.add('show');
+          document.getElementById('uploadFileName').textContent = pendingVideoFile.name;
+          animateProgress();
+
+          const { error } = await sb.storage.from('moments-videos').upload(filename, pendingVideoFile);
+
+          if (!error) {
+            const { data } = sb.storage.from('moments-videos').getPublicUrl(filename);
+            // Сохраняем запись в БД
+            await sb.from('user_moments').insert({
+              user_id: user.id,
+              video_url: data.publicUrl,
+              location,
+              caption,
+              tags,
+              status: 'pending'
+            });
+          }
+        }
+      }
+
+      // Добавляем карточку в grid
+      addMomentCard(pendingVideoURL || `https://picsum.photos/id/${Math.floor(Math.random() * 300)}/400/700`, location, 'pending');
+
+      btn.disabled = false;
+      btn.textContent = 'Опубликовать →';
+      closeUploadModal();
+
+      // Сброс
+      pendingVideoFile = null;
+      pendingVideoURL = null;
+      document.getElementById('umLocation').value = '';
+      document.getElementById('umCaption').value = '';
+      document.getElementById('umTags').value = '';
+      document.getElementById('umPreview').innerHTML = '<span style="color:rgba(255,255,255,.3);font-size:14px;">Предпросмотр видео</span>';
+
+      showToast('✅ Видео отправлено на модерацию!');
+    }
+
+    function animateProgress() {
+      let pct = 0;
+      const bar = document.getElementById('uploadProgressBar');
+      const pctEl = document.getElementById('uploadPercent');
+      const iv = setInterval(() => {
+        pct += Math.random() * 15;
+        if (pct > 95) { clearInterval(iv); pct = 100; }
+        bar.style.width = pct + '%';
+        pctEl.textContent = Math.floor(pct) + '%';
+        if (pct >= 100) {
+          setTimeout(() => {
+            document.getElementById('uploadProgressWrap').classList.remove('show');
+          }, 800);
+        }
+      }, 200);
+    }
+
+    function addMomentCard(src, title, status) {
+      const grid = document.getElementById('myMomentsGrid');
+      const addBtn = grid.querySelector('[onclick*="videoFileInput"]');
+      const card = document.createElement('div');
+      card.className = 'my-moment-card';
+      const isVideo = pendingVideoURL && src === pendingVideoURL;
+      card.innerHTML = `
+        ${isVideo
+          ? `<video src="${src}" muted autoplay loop style="width:100%;height:100%;object-fit:cover;"></video>`
+          : `<img src="${src}" alt="${title}" />`}
+        <div class="my-moment-card-overlay">
+          <span class="my-moment-status pending">⏳ На модерации</span>
+          <div class="my-moment-card-title">${title}</div>
+        </div>
+        <button class="my-moment-delete" onclick="deleteMoment(this)">✕</button>
+      `;
+      grid.insertBefore(card, addBtn);
+    }
+
+    function deleteMoment(btn) {
+      if (!confirm('Удалить Moment?')) return;
+      btn.closest('.my-moment-card').remove();
+    }
+
+    // ── Toast ────────────────────────────────────────────────────────────
+    function showToast(msg) {
+      const t = document.createElement('div');
+      t.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#1a1a1a;color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;animation:fadeInUp .3s ease;';
+      t.textContent = msg;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 3000);
+    }
+
+    // ── INIT: восстанавливаем сессию + обрабатываем email confirm ─────────
+    (async function initAuth() {
+      const sb = getSupabase();
+      if (!sb) return;
+
+      // Supabase JS v2 автоматически обрабатывает #access_token в URL
+      // (PKCE / implicit flow) — достаточно вызвать getSession()
+      const { data: { session } } = await sb.auth.getSession();
+
+      if (session) {
+        renderUserPanel(session.user);
+
+        // Если в URL есть hash с type=signup → email только что подтверждён
+        const hash = window.location.hash;
+        if (hash.includes('type=signup') || hash.includes('type=email_change')) {
+          showVerifiedBanner();
+          // Чистим hash из URL без перезагрузки
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+      }
+
+      // Слушаем изменения состояния (login/logout/token refresh)
+      sb.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+          renderUserPanel(session.user);
+          if (event === 'SIGNED_IN') {
+            // SIGNED_IN срабатывает и при подтверждении email
+            const hash = window.location.hash;
+            if (hash.includes('type=signup')) {
+              showVerifiedBanner();
+              history.replaceState(null, '', window.location.pathname + window.location.search);
+            }
+          }
+        } else if (event === 'SIGNED_OUT') {
+          renderGuestPanel();
+        }
+      });
+    })();
+  </script>
+
+</body>
+
+</html>
